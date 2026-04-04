@@ -1,0 +1,112 @@
+﻿@model OnlineShop.Models.Order
+
+@{
+    ViewData["Title"] = "تفاصيل الطلب";
+}
+
+<style>
+    body {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .card-title {
+        font-weight: bold;
+        color: #0d6efd;
+        margin-bottom: 20px;
+    }
+
+    dt {
+        font-weight: bold;
+        color: #555;
+    }
+
+    dd {
+        margin-bottom: 10px;
+    }
+
+    table th, table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .total-row {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #198754;
+    }
+</style>
+
+<h1 class="display-5 mb-4 text-primary">تفاصيل الطلب</h1>
+
+<div class="card mb-4 p-4 shadow-sm">
+    <h5 class="card-title">معلومات العميل</h5>
+    <dl class="row">
+        <dt class="col-sm-3">رقم الطلب:</dt>
+        <dd class="col-sm-9">@Model.OrderNo</dd>
+
+        <dt class="col-sm-3">الاسم:</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">رقم الهاتف:</dt>
+        <dd class="col-sm-9">@Model.PhoneNo</dd>
+
+        <dt class="col-sm-3">البريد الإلكتروني:</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">العنوان:</dt>
+        <dd class="col-sm-9">@Model.Address</dd>
+
+        <dt class="col-sm-3">تاريخ الطلب:</dt>
+        <dd class="col-sm-9">@Model.OrderDate.ToString("f")</dd>
+
+        <dt class="col-sm-3">الحالة:</dt>
+        <dd class="col-sm-9">@Model.Status</dd>
+    </dl>
+</div>
+
+@if (Model.Items != null && Model.Items.Any())
+{
+    <div class="card p-4 shadow-sm">
+        <h5 class="card-title">عناصر الطلب</h5>
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>المنتج</th>
+                    <th>الكمية</th>
+                    <th>السعر (للوحدة)</th>
+                    <th>الإجمالي</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price.ToString("C")</td>
+                        <td>@(item.Price* item.Quantity).ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <th colspan="3">الإجمالي الكلي:</th>
+                    <th>
+                        @Model.Items.Sum(i => i.Price * i.Quantity).ToString("C")
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning mt-3">
+        لا توجد عناصر في هذا الطلب
+    </div>
+}

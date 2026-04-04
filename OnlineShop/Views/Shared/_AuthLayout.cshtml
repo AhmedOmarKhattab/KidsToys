@@ -1,0 +1,461 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - تويلاند</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #e85a25;
+            --primary-soft: #fff0ea;
+            --secondary: #FF4D8D;
+            --yellow: #FFD93D;
+            --surface: #FFFBF0;
+            --card: #ffffff;
+            --border: #ffe4cc;
+            --text: #1e1b2e;
+            --muted: #7c6f8e;
+            --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --sans: 'Cairo', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: var(--sans);
+            background: #1e1020;
+            direction: rtl;
+        }
+
+        .auth-shell {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 480px;
+        }
+
+        /* ── LEFT PANEL ── */
+        .auth-panel-left {
+            background: linear-gradient(145deg, #1e1020 0%, #2a1535 40%, #1a1530 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .auth-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: blobDrift 8s ease-in-out infinite alternate;
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: #FF6B35;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: #FF4D8D;
+            bottom: -80px;
+            left: -80px;
+            animation-delay: -3s;
+        }
+
+        .blob-3 {
+            width: 200px;
+            height: 200px;
+            background: #FFD93D;
+            top: 50%;
+            left: 30%;
+            animation-delay: -5s;
+        }
+
+        @@keyframes blobDrift {
+            from
+
+        {
+            transform: translate(0, 0) scale(1);
+        }
+
+        to {
+            transform: translate(30px, 20px) scale(1.08);
+        }
+
+        }
+
+        .auth-panel-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+        }
+
+        .auth-brand {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        .auth-brand-logo {
+            width: 72px;
+            height: 72px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 32px rgba(255,107,53,0.35);
+        }
+
+        .auth-brand-name {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #fff 0%, #FFD93D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-brand-tagline {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.55);
+            font-weight: 400;
+            max-width: 300px;
+            line-height: 1.7;
+            margin: 0 auto 2.5rem;
+        }
+
+        .auth-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .auth-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.85rem 1.25rem;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .auth-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,107,53,0.25);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD93D;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* ── RIGHT PANEL ── */
+        .auth-panel-right {
+            background: var(--card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .auth-form-wrap {
+            width: 100%;
+            max-width: 380px;
+            animation: slideUp 0.5s ease both;
+        }
+
+        @@keyframes slideUp {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* ── SHARED FORM STYLES ── */
+        .auth-form-title {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+        }
+
+        .auth-form-sub {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .auth-field {
+            margin-bottom: 1.1rem;
+        }
+
+            .auth-field label {
+                display: block;
+                font-size: 0.8rem;
+                font-weight: 700;
+                color: var(--text);
+                margin-bottom: 0.45rem;
+            }
+
+        .auth-field-wrap {
+            position: relative;
+        }
+
+        .auth-field-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 1rem;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.85rem 2.75rem 0.85rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-family: var(--sans);
+            font-size: 0.92rem;
+            color: var(--text);
+            background: var(--surface);
+            outline: none;
+            transition: all 0.2s ease;
+            direction: rtl;
+        }
+
+            .auth-input:focus {
+                border-color: var(--primary);
+                background: white;
+                box-shadow: 0 0 0 4px rgba(255,107,53,0.12);
+            }
+
+                .auth-input:focus ~ .auth-field-icon {
+                    color: var(--primary);
+                }
+
+        .auth-error {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: 0.35rem;
+            font-weight: 600;
+        }
+
+        .auth-remember {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.83rem;
+            color: var(--muted);
+        }
+
+            .auth-remember input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                accent-color: var(--primary);
+                cursor: pointer;
+            }
+
+        .auth-validation {
+            background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: #ef4444;
+            margin-bottom: 1.25rem;
+        }
+
+        .auth-submit {
+            width: 100%;
+            padding: 0.95rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: var(--sans);
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.25s var(--bounce), box-shadow 0.25s;
+            box-shadow: 0 6px 24px rgba(255,107,53,0.4);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+            .auth-submit:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 32px rgba(255,107,53,0.5);
+            }
+
+        .auth-link-row {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+            .auth-link-row a {
+                color: var(--primary);
+                font-weight: 700;
+                text-decoration: none;
+            }
+
+                .auth-link-row a:hover {
+                    text-decoration: underline;
+                }
+
+        .auth-back {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 0.45rem 0.9rem;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+            .auth-back:hover {
+                color: var(--primary);
+                border-color: var(--primary);
+                background: var(--primary-soft);
+            }
+
+        /* ── RESPONSIVE ── */
+        @@media (max-width: 768px) {
+            .auth-shell
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        .auth-panel-left {
+            display: none;
+        }
+
+        .auth-panel-right {
+            padding: 2.5rem 1.5rem;
+            min-height: 100vh;
+            justify-content: flex-start;
+            padding-top: 4rem;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-shell">
+
+        <!-- LEFT: Brand Panel -->
+        <div class="auth-panel-left">
+            <div class="auth-blob blob-1"></div>
+            <div class="auth-blob blob-2"></div>
+            <div class="auth-blob blob-3"></div>
+            <div class="auth-brand">
+                <div class="auth-brand-logo">🧸</div>
+                <div class="auth-brand-name">ToyLand</div>
+                <p class="auth-brand-tagline">وجهتك الأولى للألعاب السحرية — آمنة، ممتعة، وتعليمية لكل طفل</p>
+                <div class="auth-features">
+                    <div class="auth-feature">
+                        <div class="auth-feature-icon"><i class="bi bi-shield-check"></i></div>
+                        <span>100% معتمد للسلامة</span>
+                    </div>
+                    <div class="auth-feature">
+                        <div class="auth-feature-icon"><i class="bi bi-truck"></i></div>
+                        <span>شحن مجاني فوق 40$</span>
+                    </div>
+                    <div class="auth-feature">
+                        <div class="auth-feature-icon"><i class="bi bi-arrow-counterclockwise"></i></div>
+                        <span>إرجاع مجاني خلال 30 يوماً</span>
+                    </div>
+                    <div class="auth-feature">
+                        <div class="auth-feature-icon"><i class="bi bi-gift"></i></div>
+                        <span>تغليف هدايا مجاني</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Form Panel -->
+        <div class="auth-panel-right">
+            <a asp-controller="Home" asp-action="Index" class="auth-back">
+                <i class="bi bi-arrow-right"></i>
+                الرئيسية
+            </a>
+            <div class="auth-form-wrap">
+                @RenderBody()
+            </div>
+        </div>
+
+    </div>
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("ValidationSection", required: false)
+</body>
+</html>

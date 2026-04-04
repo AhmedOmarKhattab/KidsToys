@@ -1,0 +1,1798 @@
+﻿@model X.PagedList.IPagedList<Product>
+@{
+    ViewData["Title"] = "تويلاند — ألعاب سحرية لكل طفل!";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+<!-- Floating Confetti -->
+<div class="confetti-bg" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<!-- HERO -->
+<section class="tl-hero">
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-inner">
+        <div class="hero-text">
+            <div class="hero-eyebrow">🎊 أكثر من 5,000 طفل سعيد!</div>
+            <h1 class="hero-title">
+                <span class="line1">حيث تنبض كل</span><br />
+                <span class="line2">خيالاتك</span><br />
+                <span class="line3">بالحياة! 🚀</span>
+            </h1>
+            <p class="hero-desc">اكتشف ألعاباً سحرية ومغامرات ممتعة لكل طفل. آمنة وممتعة وتعليمية — للأعمار من 0 إلى 12 سنة!</p>
+            <div class="hero-btns">
+                <a asp-action="ShowProducts" class="btn-primary">تسوّق الآن 🎁</a>
+                <a href="#age-guide" class="btn-secondary">اختر حسب العمر 🔍</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-num">+5,000</span>
+                    <span class="hero-stat-lbl">طفل سعيد</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num">+500</span>
+                    <span class="hero-stat-lbl">علامة ألعاب</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num">100%</span>
+                    <span class="hero-stat-lbl">آمن ومعتمد</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-mini-toys" aria-hidden="true">
+                <span class="mini-toy">🚂</span>
+                <span class="mini-toy">🎨</span>
+                <span class="mini-toy">🪀</span>
+                <span class="mini-toy">🎮</span>
+                <span class="mini-toy">🏆</span>
+            </div>
+            <span class="hero-big-emoji">🧸</span>
+        </div>
+    </div>
+</section>
+
+<!-- BANNER STRIP -->
+<div class="banner-strip">
+    <div class="banner-item"><i class="bi bi-truck"></i> شحن مجاني فوق 40$</div>
+    <div class="banner-item"><i class="bi bi-shield-check"></i> معتمد 100% بالسلامة</div>
+    <div class="banner-item"><i class="bi bi-arrow-counterclockwise"></i> إرجاع خلال 30 يوماً</div>
+    <div class="banner-item"><i class="bi bi-gift"></i> تغليف هدايا مجاني</div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories-section">
+    <div class="tl-container">
+        <div class="section-header">
+            <span class="section-eyebrow">🎠 استكشف</span>
+            <h2 class="section-title">تسوّق حسب <span>الفئة</span></h2>
+            <div class="section-underline"></div>
+            <p class="section-sub">اعثر على اللعبة المثالية لكل نوع من أوقات اللعب</p>
+        </div>
+        <div class="categories-grid">
+            <div class="cat-card cat-card-1">
+                <span class="cat-emoji">🏗️</span>
+                <p class="cat-name">بناء وليغو</p>
+                <span class="cat-count">+120 منتجاً</span>
+            </div>
+            <div class="cat-card cat-card-2">
+                <span class="cat-emoji">🎎</span>
+                <p class="cat-name">دمى وشخصيات</p>
+                <span class="cat-count">+85 منتجاً</span>
+            </div>
+            <div class="cat-card cat-card-3">
+                <span class="cat-emoji">🎮</span>
+                <p class="cat-name">ألعاب وبازل</p>
+                <span class="cat-count">+200 منتجاً</span>
+            </div>
+            <div class="cat-card cat-card-4">
+                <span class="cat-emoji">🎨</span>
+                <p class="cat-name">فنون وحِرَف</p>
+                <span class="cat-count">+95 منتجاً</span>
+            </div>
+            <div class="cat-card cat-card-5">
+                <span class="cat-emoji">🚗</span>
+                <p class="cat-name">سيارات وتحكم عن بُعد</p>
+                <span class="cat-count">+140 منتجاً</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+    <div class="section-header">
+        <span class="section-eyebrow">⭐ أفضل الاختيارات</span>
+        <h2 class="section-title">ألعاب <span>مميزة</span></h2>
+        <div class="section-underline"></div>
+        <p class="section-sub">الأطفال والآباء يحبونها — وستحبها أنت أيضاً!</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <span class="empty-icon">🧸</span>
+            <h3 class="empty-title">لا توجد ألعاب متاحة الآن!</h3>
+            <p class="empty-text">تابعنا قريباً لمنتجات جديدة رائعة 🎉</p>
+        </div>
+    }
+    else
+    {
+        <div class="products-grid">
+            @foreach (var product in Model)
+            {
+                <div class="product-card">
+                    <div class="product-img-wrap">
+                        @if (product.Quantity < 10)
+                        {
+                            <span class="product-badge badge-hot">🔥 كمية محدودة</span>
+                        }
+                        else if (product.Price < 20)
+                        {
+                            <span class="product-badge badge-sale">💜 عرض رائع</span>
+                        }
+                        else
+                        {
+                            <span class="product-badge badge-new">✨ متوفر</span>
+                        }
+                        <button class="wishlist-btn" aria-label="أضف إلى المفضلة">🤍</button>
+                        <img src="~/files/images/@product.Image"
+                             alt="@product.Name"
+                             class="product-image"
+                             loading="lazy" />
+                    </div>
+                    <div class="product-body">
+                        <div class="product-stock-tag">
+                            <i class="bi bi-box-seam"></i> @product.Quantity في المخزون
+                        </div>
+                        <p class="product-name">@product.Name</p>
+                        <div class="product-stars">
+                            <span class="stars">★★★★★</span>
+                            <span class="stars-count">(4.5)</span>
+                        </div>
+                        <div class="product-price-row">
+                            <span class="price-now">$@product.Price.ToString("0.00")</span>
+                        </div>
+                        <a asp-action="Details"
+                           asp-controller="Home"
+                           asp-route-id="@product.Id"
+                           class="add-to-cart">
+                            <i class="bi bi-eye"></i> عرض التفاصيل
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrapper">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+            {
+                DisplayLinkToFirstPage = PagedListDisplayMode.Never,
+                DisplayLinkToLastPage = PagedListDisplayMode.Never,
+                DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                LinkToPreviousPageFormat = "→ السابق",
+                LinkToNextPageFormat = "التالي ←",
+                UlElementClasses = new[] { "pagination-custom" },
+                LiElementClasses = new[] { "page-item-custom" }
+                })
+    </div>
+        }
+</section>
+
+<!-- AGE GUIDE -->
+<section class="age-section" id="age-guide">
+    <div class="tl-container" style="max-width:1000px">
+        <div class="section-header">
+            <span class="section-eyebrow">👶 تسوّق بذكاء</span>
+            <h2 class="section-title">اعثر على ألعاب حسب <span>العمر</span></h2>
+            <div class="section-underline"></div>
+            <p class="section-sub">كل لعبة مصنّفة حسب مرحلة النمو المناسبة</p>
+        </div>
+        <div class="age-grid">
+            <div class="age-card age-card-1">
+                <span class="age-emoji">🍼</span>
+                <div class="age-label">0 – 2 سنوات</div>
+                <div class="age-desc">ألعاب حسية وأولى</div>
+                <a asp-action="ShowProducts" class="age-btn">تصفّح ←</a>
+            </div>
+            <div class="age-card age-card-2">
+                <span class="age-emoji">🦄</span>
+                <div class="age-label">3 – 5 سنوات</div>
+                <div class="age-desc">اللعب الإبداعي</div>
+                <a asp-action="ShowProducts" class="age-btn">تصفّح ←</a>
+            </div>
+            <div class="age-card age-card-3">
+                <span class="age-emoji">🏗️</span>
+                <div class="age-label">6 – 8 سنوات</div>
+                <div class="age-desc">البناء والإبداع</div>
+                <a asp-action="ShowProducts" class="age-btn">تصفّح ←</a>
+            </div>
+            <div class="age-card age-card-4">
+                <span class="age-emoji">🤖</span>
+                <div class="age-label">9 – 12 سنة</div>
+                <div class="age-desc">العلوم والتحديات</div>
+                <a asp-action="ShowProducts" class="age-btn">تصفّح ←</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+    <div class="section-header">
+        <span class="section-eyebrow">💬 عائلات سعيدة</span>
+        <h2 class="section-title">ماذا يقول <span>الآباء</span></h2>
+        <div class="section-underline"></div>
+        <p class="section-sub">قصص حقيقية من عائلات حقيقية 💛</p>
+    </div>
+    <div class="reviews-grid tl-container">
+        <div class="review-card">
+            <div class="review-top">
+                <div class="review-avatar review-avatar-1">👩</div>
+                <div>
+                    <div class="review-name">سارة م.</div>
+                    <div class="review-role">أم لطفلين، أعمارهم 4 و7 سنوات</div>
+                </div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"أطفالي يعشقون مجموعة البناء! يلعبون بها كل يوم منذ 3 أسابيع. أفضل شراء قمت به هذا العام. والشحن كان سريعاً جداً!"</p>
+            <span class="review-toy">🏗️ مجموعة البناء</span>
+        </div>
+        <div class="review-card">
+            <div class="review-top">
+                <div class="review-avatar review-avatar-2">👨</div>
+                <div>
+                    <div class="review-name">جيمس ك.</div>
+                    <div class="review-role">أب لطفل واحد، عمره 10 سنوات</div>
+                </div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"لعبة الروبوت أبعدت ابني عن الشاشات وأعادته للعب الحقيقي! تويلاند دائماً يقدم منتجات ممتازة ممتعة وتعليمية في آنٍ واحد."</p>
+            <span class="review-toy">🤖 لعبة الروبوت</span>
+        </div>
+        <div class="review-card">
+            <div class="review-top">
+                <div class="review-avatar review-avatar-3">👩</div>
+                <div>
+                    <div class="review-name">بريا ت.</div>
+                    <div class="review-role">أم لثلاثة أطفال، أعمارهم 2 و5 و8 سنوات</div>
+                </div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"أخيراً وجدت متجر ألعاب أثق به! كل شيء معتمد للسلامة، التغليف صديق للبيئة، وبناتي مجنونات بمجموعة استوديو الفن."</p>
+            <span class="review-toy">🎨 استوديو الفن</span>
+        </div>
+    </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-section">
+    <div class="why-grid tl-container">
+        <div class="why-cards-side">
+            <div class="why-card">
+                <div class="why-icon why-icon-1">🛡️</div>
+                <div class="why-card-title">اختبار سلامة 100%</div>
+                <p class="why-card-text">كل لعبة معتمدة وخالية من المواد السامة. نحن لا نتنازل أبداً عن سلامة طفلك.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon why-icon-2">🚚</div>
+                <div class="why-card-title">شحن سريع ومجاني</div>
+                <p class="why-card-text">الطلبات فوق 40$ تُشحن مجاناً خلال 2–3 أيام. نعرف أن الأطفال لا يصبرون!</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon why-icon-3">🎁</div>
+                <div class="why-card-title">تغليف هدايا</div>
+                <p class="why-card-text">اجعل كل هدية سحرية مع خدمة التغليف الملوّن المجانية.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon why-icon-4">↩️</div>
+                <div class="why-card-title">إرجاع سهل خلال 30 يوماً</div>
+                <p class="why-card-text">غير راضٍ؟ أعد أي منتج بدون أي متاعب خلال 30 يوماً.</p>
+            </div>
+        </div>
+        <div class="why-text-side">
+            <span class="section-eyebrow" style="text-align:right;display:inline-block;">💛 لماذا تويلاند؟</span>
+            <h2 class="why-big-title">
+                حيث يكبر الأطفال<br />ويلعبون<br /><span>ويبتسمون</span> 😊
+            </h2>
+            <p class="why-desc">نؤمن بأن كل طفل يستحق ألعاباً رائعة تشعل الإبداع وتشجّع التعلم وتجلب الفرحة الخالصة. لهذا نختار كل منتج في متجرنا بعناية فائقة.</p>
+            <div class="why-trust-badges">
+                <span class="trust-badge">✅ معتمد CE</span>
+                <span class="trust-badge">🌿 صديق للبيئة</span>
+                <span class="trust-badge">🏆 حائز على جوائز</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section">
+    <div class="newsletter-inner">
+        <span class="newsletter-badge">🎉 انضم للمتعة</span>
+        <h2 class="newsletter-title">احصل على <span>خصم 10%</span><br />على أول طلب!</h2>
+        <p class="newsletter-sub">اشترك للحصول على عروض حصرية ووصولات جديدة ومفاجآت أعياد ميلاد لصغارك 🎂</p>
+        <div class="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="أدخل عنوان بريدك الإلكتروني..." />
+            <button class="newsletter-btn">اشترك 🎈</button>
+        </div>
+        <p class="newsletter-note">🔒 لا رسائل مزعجة أبداً. يمكنك إلغاء الاشتراك في أي وقت. نعدك بذلك!</p>
+    </div>
+</section>
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap');
+
+    :root {
+        --yellow: #FFD93D;
+        --orange: #FF6B35;
+        --pink: #FF4D8D;
+        --blue: #4ECDC4;
+        --purple: #A855F7;
+        --green: #4ADE80;
+        --sky: #38BDF8;
+        --light-bg: #FFFBF0;
+        --card-bg: #ffffff;
+        --text: #1e1b2e;
+        --muted: #7c6f8e;
+        --r: 20px;
+        --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--light-bg);
+        font-family: 'Cairo', 'Tajawal', sans-serif;
+        color: var(--text);
+        overflow-x: hidden;
+        direction: rtl;
+    }
+
+    .tl-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* ── FLOATING CONFETTI ── */
+    .confetti-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+        .confetti-bg span {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            opacity: 0.18;
+            animation: floatUp linear infinite;
+        }
+
+            .confetti-bg span:nth-child(1) {
+                left: 5%;
+                background: var(--pink);
+                width: 18px;
+                height: 18px;
+                animation-duration: 12s;
+                animation-delay: 0s;
+            }
+
+            .confetti-bg span:nth-child(2) {
+                left: 15%;
+                background: var(--yellow);
+                width: 10px;
+                height: 10px;
+                animation-duration: 9s;
+                animation-delay: 2s;
+            }
+
+            .confetti-bg span:nth-child(3) {
+                left: 25%;
+                background: var(--blue);
+                width: 14px;
+                height: 14px;
+                animation-duration: 14s;
+                animation-delay: 4s;
+            }
+
+            .confetti-bg span:nth-child(4) {
+                left: 40%;
+                background: var(--orange);
+                width: 8px;
+                height: 8px;
+                animation-duration: 10s;
+                animation-delay: 1s;
+            }
+
+            .confetti-bg span:nth-child(5) {
+                left: 55%;
+                background: var(--purple);
+                width: 16px;
+                height: 16px;
+                animation-duration: 11s;
+                animation-delay: 3s;
+            }
+
+            .confetti-bg span:nth-child(6) {
+                left: 68%;
+                background: var(--green);
+                width: 12px;
+                height: 12px;
+                animation-duration: 13s;
+                animation-delay: 5s;
+            }
+
+            .confetti-bg span:nth-child(7) {
+                left: 80%;
+                background: var(--sky);
+                width: 10px;
+                height: 10px;
+                animation-duration: 8s;
+                animation-delay: 1.5s;
+            }
+
+            .confetti-bg span:nth-child(8) {
+                left: 90%;
+                background: var(--pink);
+                width: 14px;
+                height: 14px;
+                animation-duration: 15s;
+                animation-delay: 6s;
+            }
+
+            .confetti-bg span:nth-child(9) {
+                left: 33%;
+                background: var(--yellow);
+                width: 20px;
+                height: 20px;
+                animation-duration: 10s;
+                animation-delay: 7s;
+            }
+
+            .confetti-bg span:nth-child(10) {
+                left: 72%;
+                background: var(--orange);
+                width: 9px;
+                height: 9px;
+                animation-duration: 12s;
+                animation-delay: 0.5s;
+            }
+
+    @@keyframes floatUp {
+        0% {
+            transform: translateY(110vh) rotate(0deg);
+            opacity: 0.18;
+        }
+
+        100% {
+            transform: translateY(-10vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* ── HERO ── */
+    .tl-hero {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 2rem;
+    }
+
+    .hero-bg-shapes {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .shape {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        opacity: 0.25;
+    }
+
+    .shape-1 {
+        width: 500px;
+        height: 500px;
+        background: var(--yellow);
+        top: -100px;
+        left: -100px;
+    }
+
+    .shape-2 {
+        width: 350px;
+        height: 350px;
+        background: var(--pink);
+        bottom: -80px;
+        right: -80px;
+    }
+
+    .shape-3 {
+        width: 250px;
+        height: 250px;
+        background: var(--blue);
+        top: 30%;
+        right: 35%;
+    }
+
+    .hero-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 4rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--yellow);
+        color: var(--text);
+        padding: 0.45rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(255,217,61,0.5);
+        animation: wobble 3s ease-in-out infinite;
+    }
+
+    @@keyframes wobble {
+        0%, 100% {
+            transform: rotate(-2deg);
+        }
+
+        50% {
+            transform: rotate(2deg);
+        }
+    }
+
+    .hero-title {
+        font-family: 'Cairo', sans-serif;
+        font-size: clamp(2.8rem, 5vw, 4.5rem);
+        line-height: 1.3;
+        margin-bottom: 1.25rem;
+        font-weight: 900;
+    }
+
+        .hero-title .line1 {
+            color: var(--text);
+        }
+
+        .hero-title .line2 {
+            background: linear-gradient(135deg, var(--orange), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title .line3 {
+            color: var(--purple);
+        }
+
+    .hero-desc {
+        font-size: 1.1rem;
+        color: var(--muted);
+        font-weight: 600;
+        line-height: 1.9;
+        margin-bottom: 2rem;
+        max-width: 420px;
+    }
+
+    .hero-btns {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 1.05rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 8px 24px rgba(255,107,53,0.4);
+        transition: transform 0.25s var(--bounce), box-shadow 0.25s;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 14px 36px rgba(255,107,53,0.5);
+            color: white;
+        }
+
+    .btn-secondary {
+        background: white;
+        color: var(--orange);
+        border: 3px solid var(--orange);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 1.05rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: transform 0.25s var(--bounce), background 0.2s;
+    }
+
+        .btn-secondary:hover {
+            background: var(--orange);
+            color: white;
+            transform: translateY(-4px) scale(1.04);
+        }
+
+    .hero-visual {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-big-emoji {
+        font-size: clamp(8rem, 14vw, 14rem);
+        animation: floatBig 4s ease-in-out infinite;
+        filter: drop-shadow(0 20px 40px rgba(255,107,53,0.3));
+        line-height: 1;
+    }
+
+    @@keyframes floatBig {
+        0%, 100% {
+            transform: translateY(0) rotate(-5deg);
+        }
+
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+        }
+    }
+
+    .hero-mini-toys {
+        position: absolute;
+        inset: 0;
+    }
+
+    .mini-toy {
+        position: absolute;
+        font-size: 2.5rem;
+        animation: floatSmall ease-in-out infinite;
+    }
+
+        .mini-toy:nth-child(1) {
+            top: 5%;
+            left: 10%;
+            animation-duration: 3.5s;
+            animation-delay: 0s;
+        }
+
+        .mini-toy:nth-child(2) {
+            top: 20%;
+            right: 5%;
+            animation-duration: 4s;
+            animation-delay: 0.5s;
+        }
+
+        .mini-toy:nth-child(3) {
+            bottom: 20%;
+            left: 5%;
+            animation-duration: 3s;
+            animation-delay: 1s;
+        }
+
+        .mini-toy:nth-child(4) {
+            bottom: 5%;
+            right: 10%;
+            animation-duration: 4.5s;
+            animation-delay: 1.5s;
+        }
+
+        .mini-toy:nth-child(5) {
+            top: 50%;
+            left: -5%;
+            animation-duration: 3.8s;
+            animation-delay: 2s;
+        }
+
+    @@keyframes floatSmall {
+        0%, 100% {
+            transform: translateY(0) rotate(-8deg) scale(1);
+        }
+
+        50% {
+            transform: translateY(-14px) rotate(8deg) scale(1.1);
+        }
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-stat {
+        background: white;
+        border-radius: 16px;
+        padding: 0.75rem 1.25rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 2px solid transparent;
+        transition: border-color 0.2s, transform 0.2s var(--bounce);
+    }
+
+        .hero-stat:hover {
+            border-color: var(--yellow);
+            transform: translateY(-4px);
+        }
+
+    .hero-stat-num {
+        font-family: 'Cairo', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-stat-lbl {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--muted);
+    }
+
+    /* ── BANNER STRIP ── */
+    .banner-strip {
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .banner-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: white;
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+        .banner-item i {
+            font-size: 1.4rem;
+        }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-eyebrow {
+        display: inline-block;
+        background: linear-gradient(135deg, #fde68a, #fbbf24);
+        color: #92400e;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .section-title {
+        font-family: 'Cairo', sans-serif;
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+        font-weight: 900;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+        .section-title span {
+            color: var(--orange);
+        }
+
+    .section-underline {
+        width: 70px;
+        height: 5px;
+        margin: 0.5rem auto 0;
+        background: linear-gradient(90deg, var(--orange), var(--pink));
+        border-radius: 3px;
+    }
+
+    .section-sub {
+        color: var(--muted);
+        font-weight: 600;
+        margin-top: 0.75rem;
+        font-size: 1rem;
+    }
+
+    /* ── CATEGORIES ── */
+    .categories-section {
+        padding: 5rem 2rem;
+        position: relative;
+    }
+
+    .categories-grid {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1.25rem;
+    }
+
+    .cat-card {
+        background: white;
+        border-radius: 24px;
+        padding: 1.75rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s var(--bounce), box-shadow 0.3s;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        border: 3px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .cat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 21px;
+        }
+
+        .cat-card:hover {
+            transform: translateY(-10px) scale(1.04);
+        }
+
+            .cat-card:hover::before {
+                opacity: 1;
+            }
+
+    .cat-card-1 {
+        border-color: #fde68a;
+    }
+
+        .cat-card-1:hover {
+            box-shadow: 0 16px 40px rgba(251,191,36,0.3);
+        }
+
+        .cat-card-1::before {
+            background: linear-gradient(135deg, rgba(253,230,138,0.3), rgba(251,191,36,0.1));
+        }
+
+    .cat-card-2 {
+        border-color: #fecdd3;
+    }
+
+        .cat-card-2:hover {
+            box-shadow: 0 16px 40px rgba(255,77,141,0.25);
+        }
+
+        .cat-card-2::before {
+            background: linear-gradient(135deg, rgba(254,205,211,0.3), rgba(255,77,141,0.1));
+        }
+
+    .cat-card-3 {
+        border-color: #bfdbfe;
+    }
+
+        .cat-card-3:hover {
+            box-shadow: 0 16px 40px rgba(56,189,248,0.25);
+        }
+
+        .cat-card-3::before {
+            background: linear-gradient(135deg, rgba(191,219,254,0.3), rgba(56,189,248,0.1));
+        }
+
+    .cat-card-4 {
+        border-color: #d9f99d;
+    }
+
+        .cat-card-4:hover {
+            box-shadow: 0 16px 40px rgba(74,222,128,0.25);
+        }
+
+        .cat-card-4::before {
+            background: linear-gradient(135deg, rgba(217,249,157,0.3), rgba(74,222,128,0.1));
+        }
+
+    .cat-card-5 {
+        border-color: #e9d5ff;
+    }
+
+        .cat-card-5:hover {
+            box-shadow: 0 16px 40px rgba(168,85,247,0.25);
+        }
+
+        .cat-card-5::before {
+            background: linear-gradient(135deg, rgba(233,213,255,0.3), rgba(168,85,247,0.1));
+        }
+
+    .cat-emoji {
+        font-size: 3rem;
+        margin-bottom: 0.75rem;
+        display: block;
+        transition: transform 0.3s var(--bounce);
+    }
+
+    .cat-card:hover .cat-emoji {
+        transform: scale(1.3) rotate(10deg);
+    }
+
+    .cat-name {
+        margin: 0 0 0.25rem;
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--text);
+    }
+
+    .cat-count {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    /* ── PRODUCTS ── */
+    .products-section {
+        padding: 5rem 2rem;
+        background: linear-gradient(180deg, #fff 0%, #FFF5E6 100%);
+    }
+
+    .products-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        transition: transform 0.3s var(--bounce), box-shadow 0.3s;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        display: flex;
+        flex-direction: column;
+        border: 2px solid transparent;
+    }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(255,107,53,0.15);
+            border-color: var(--yellow);
+        }
+
+    .product-img-wrap {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #fff8f0, #fff3e0);
+        padding: 1.5rem;
+        text-align: center;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 14px;
+        transition: transform 0.4s var(--bounce);
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.07);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.35rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: white;
+        z-index: 1;
+    }
+
+    .badge-hot {
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+    }
+
+    .badge-new {
+        background: linear-gradient(135deg, var(--blue), var(--sky));
+    }
+
+    .badge-sale {
+        background: linear-gradient(135deg, var(--purple), #7c3aed);
+    }
+
+    .wishlist-btn {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: white;
+        border: none;
+        cursor: pointer;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s var(--bounce);
+        z-index: 1;
+    }
+
+        .wishlist-btn:hover {
+            transform: scale(1.3);
+        }
+
+    .product-body {
+        padding: 1.25rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .product-stock-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: #e0f2fe;
+        color: #0284c7;
+        font-size: 0.72rem;
+        font-weight: 800;
+        padding: 0.2rem 0.7rem;
+        border-radius: 50px;
+        width: fit-content;
+    }
+
+    .product-name {
+        font-weight: 800;
+        font-size: 1rem;
+        color: var(--text);
+        line-height: 1.5;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .product-stars {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.85rem;
+    }
+
+    .stars {
+        color: var(--yellow);
+        letter-spacing: -2px;
+    }
+
+    .stars-count {
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    .product-price-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .price-now {
+        font-family: 'Cairo', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--orange);
+    }
+
+    .add-to-cart {
+        margin-top: auto;
+        padding: 0.8rem;
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 14px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 0.95rem;
+        transition: transform 0.2s var(--bounce), box-shadow 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 16px rgba(255,107,53,0.3);
+        text-decoration: none;
+    }
+
+        .add-to-cart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(255,107,53,0.45);
+            color: white;
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        background: white;
+        border-radius: 24px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .empty-title {
+        font-family: 'Cairo', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-text {
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    /* Pagination */
+    .pagination-wrapper {
+        margin-top: 3rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination-custom {
+        display: flex;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .page-item-custom a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 45px;
+        height: 45px;
+        padding: 0.5rem 1rem;
+        background: white;
+        color: var(--orange);
+        text-decoration: none;
+        border-radius: 14px;
+        font-weight: 800;
+        transition: all 0.2s var(--bounce);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        font-family: 'Cairo', sans-serif;
+    }
+
+        .page-item-custom a:hover,
+        .page-item-custom.active a {
+            background: linear-gradient(135deg, var(--orange), var(--pink));
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,107,53,0.35);
+        }
+
+    /* ── AGE GUIDE ── */
+    .age-section {
+        padding: 5rem 2rem;
+    }
+
+    .age-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+    }
+
+    .age-card {
+        border-radius: 28px;
+        padding: 2rem 1.25rem;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s var(--bounce), box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .age-card:hover {
+            transform: translateY(-8px) scale(1.03);
+        }
+
+    .age-card-1 {
+        background: linear-gradient(145deg, #FFF3CD, #FFE082);
+    }
+
+        .age-card-1:hover {
+            box-shadow: 0 16px 40px rgba(255,193,7,0.35);
+        }
+
+    .age-card-2 {
+        background: linear-gradient(145deg, #FCE4EC, #F8BBD0);
+    }
+
+        .age-card-2:hover {
+            box-shadow: 0 16px 40px rgba(233,30,99,0.25);
+        }
+
+    .age-card-3 {
+        background: linear-gradient(145deg, #E3F2FD, #BBDEFB);
+    }
+
+        .age-card-3:hover {
+            box-shadow: 0 16px 40px rgba(33,150,243,0.25);
+        }
+
+    .age-card-4 {
+        background: linear-gradient(145deg, #E8F5E9, #C8E6C9);
+    }
+
+        .age-card-4:hover {
+            box-shadow: 0 16px 40px rgba(76,175,80,0.25);
+        }
+
+    .age-emoji {
+        font-size: 3.5rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .age-label {
+        font-family: 'Cairo', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 900;
+        margin-bottom: 0.3rem;
+    }
+
+    .age-card-1 .age-label {
+        color: #B8860B;
+    }
+
+    .age-card-2 .age-label {
+        color: #C2185B;
+    }
+
+    .age-card-3 .age-label {
+        color: #1565C0;
+    }
+
+    .age-card-4 .age-label {
+        color: #2E7D32;
+    }
+
+    .age-desc {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: rgba(0,0,0,0.45);
+    }
+
+    .age-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-top: 1rem;
+        padding: 0.5rem 1.2rem;
+        background: rgba(255,255,255,0.6);
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--text);
+        text-decoration: none;
+        transition: background 0.2s;
+        backdrop-filter: blur(4px);
+    }
+
+        .age-btn:hover {
+            background: rgba(255,255,255,0.9);
+            color: var(--text);
+        }
+
+    /* ── REVIEWS ── */
+    .reviews-section {
+        padding: 5rem 2rem;
+        background: linear-gradient(135deg, #fdf4ff, #fce7f3, #fffbeb);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+
+    .review-card {
+        background: white;
+        border-radius: 24px;
+        padding: 1.75rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        transition: transform 0.3s var(--bounce);
+        border-top: 5px solid;
+    }
+
+        .review-card:nth-child(1) {
+            border-color: var(--yellow);
+        }
+
+        .review-card:nth-child(2) {
+            border-color: var(--pink);
+        }
+
+        .review-card:nth-child(3) {
+            border-color: var(--blue);
+        }
+
+        .review-card:hover {
+            transform: translateY(-6px);
+        }
+
+    .review-top {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .review-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .review-avatar-1 {
+        background: linear-gradient(135deg, #fde68a, #fbbf24);
+    }
+
+    .review-avatar-2 {
+        background: linear-gradient(135deg, #fecdd3, #fb7185);
+    }
+
+    .review-avatar-3 {
+        background: linear-gradient(135deg, #bfdbfe, #60a5fa);
+    }
+
+    .review-name {
+        font-weight: 800;
+        font-size: 0.95rem;
+    }
+
+    .review-role {
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    .review-stars {
+        color: var(--yellow);
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .review-text {
+        font-size: 0.92rem;
+        line-height: 1.9;
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    .review-toy {
+        font-size: 1.5rem;
+        margin-top: 0.75rem;
+        display: block;
+    }
+
+    /* ── WHY US ── */
+    .why-section {
+        padding: 5rem 2rem;
+        background: white;
+    }
+
+    .why-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .why-cards-side {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+    }
+
+    .why-card {
+        background: var(--light-bg);
+        border-radius: 22px;
+        padding: 1.5rem;
+        transition: transform 0.3s var(--bounce), box-shadow 0.3s;
+        border: 2px solid transparent;
+        cursor: default;
+    }
+
+        .why-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--yellow);
+            box-shadow: 0 12px 32px rgba(255,217,61,0.2);
+        }
+
+    .why-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        transition: transform 0.3s var(--bounce);
+    }
+
+    .why-card:hover .why-icon {
+        transform: scale(1.2) rotate(-8deg);
+    }
+
+    .why-icon-1 {
+        background: linear-gradient(135deg, #fde68a, #fbbf24);
+    }
+
+    .why-icon-2 {
+        background: linear-gradient(135deg, #fecdd3, #fb7185);
+    }
+
+    .why-icon-3 {
+        background: linear-gradient(135deg, #bfdbfe, #60a5fa);
+    }
+
+    .why-icon-4 {
+        background: linear-gradient(135deg, #d9f99d, #86efac);
+    }
+
+    .why-card-title {
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .why-card-text {
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-weight: 600;
+        line-height: 1.8;
+    }
+
+    .why-text-side {
+        padding-right: 2rem;
+    }
+
+    .why-big-title {
+        font-family: 'Cairo', sans-serif;
+        font-size: clamp(2rem, 3.5vw, 3rem);
+        font-weight: 900;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+
+        .why-big-title span {
+            color: var(--orange);
+        }
+
+    .why-desc {
+        font-size: 1rem;
+        color: var(--muted);
+        font-weight: 600;
+        line-height: 1.9;
+        margin-bottom: 2rem;
+    }
+
+    .why-trust-badges {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .trust-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, #fff8f0, #ffe4cc);
+        border: 2px solid #fed7aa;
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 800;
+    }
+
+    /* ── NEWSLETTER ── */
+    .newsletter-section {
+        padding: 5rem 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, #1e1b2e 0%, #312051 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .newsletter-section::before {
+            content: '🎁 🎈 🎉 🧸 🎠 🎡 🎢 🎁 🎈 🎉 🧸 🎠 🎡 🎢 🎁 🎈 🎉';
+            position: absolute;
+            bottom: 1rem;
+            left: 0;
+            right: 0;
+            font-size: 1.5rem;
+            letter-spacing: 1rem;
+            opacity: 0.12;
+            white-space: nowrap;
+        }
+
+    .newsletter-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 580px;
+        margin: 0 auto;
+    }
+
+    .newsletter-badge {
+        display: inline-block;
+        background: var(--yellow);
+        color: #92400e;
+        font-weight: 800;
+        font-size: 0.85rem;
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.03em;
+    }
+
+    .newsletter-title {
+        font-family: 'Cairo', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+
+        .newsletter-title span {
+            color: var(--yellow);
+        }
+
+    .newsletter-sub {
+        color: rgba(255,255,255,0.65);
+        font-weight: 600;
+        margin-bottom: 2rem;
+    }
+
+    .newsletter-form {
+        display: flex;
+        gap: 0.75rem;
+        max-width: 460px;
+        margin: 0 auto;
+        flex-direction: row-reverse;
+    }
+
+    .newsletter-input {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 50px;
+        color: white;
+        font-size: 0.95rem;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 600;
+        text-align: right;
+    }
+
+        .newsletter-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--yellow);
+            background: rgba(255,255,255,0.15);
+        }
+
+    .newsletter-btn {
+        padding: 1rem 1.75rem;
+        background: linear-gradient(135deg, var(--yellow), #f59e0b);
+        color: var(--text);
+        border: none;
+        cursor: pointer;
+        border-radius: 50px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        transition: transform 0.25s var(--bounce), box-shadow 0.25s;
+        box-shadow: 0 6px 20px rgba(255,193,7,0.4);
+    }
+
+        .newsletter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255,193,7,0.55);
+        }
+
+    .newsletter-note {
+        font-size: 0.78rem;
+        color: rgba(255,255,255,0.35);
+        margin-top: 1rem;
+        font-weight: 600;
+    }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 1024px) {
+        .categories-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .products-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .age-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .why-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .why-text-side {
+            padding-right: 0;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-inner {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .hero-btns {
+            justify-content: center;
+        }
+
+        .hero-stats {
+            justify-content: center;
+        }
+
+        .hero-desc {
+            margin: 0 auto 2rem;
+        }
+
+        .hero-big-emoji {
+            font-size: 8rem;
+        }
+
+        .categories-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .products-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .reviews-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .why-cards-side {
+            grid-template-columns: 1fr;
+        }
+
+        .newsletter-form {
+            flex-direction: column;
+        }
+
+        .banner-strip {
+            gap: 1.25rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .products-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .age-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+
+<script>
+    // Wishlist heart toggle
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+            btn.style.transform = 'scale(1.5)';
+            setTimeout(() => btn.style.transform = '', 300);
+        });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.style.opacity = '1';
+                e.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.product-card, .cat-card, .age-card, .review-card, .why-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        observer.observe(el);
+    });
+</script>

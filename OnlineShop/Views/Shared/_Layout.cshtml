@@ -1,0 +1,279 @@
+﻿@using System.Net.Http
+@using OnlineShop.Helpers
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+    int count = 0;
+    List<Product> products = HttpContextAccessor.HttpContext.Session
+        .Get<List<Product>>("products");
+
+    if (products == null)
+    {
+        products = new List<Product>();
+    }
+    count = products.Count();
+
+    var Name = User.Identity?.Name ?? "زائر";
+
+    var user = await userManager.FindByNameAsync(Name);
+
+    var role = await userManager.GetRolesAsync(user ?? new ApplicationUser());
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - متجرنا</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/lib/datatables/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables-buttons/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/alertifyjs/css/alertify.min.css" />
+    <link rel="stylesheet" href="~/lib/alertifyjs/css/themes/default.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <!-- شريط التنقل -->
+    <header>
+        <nav class="tl-navbar">
+            <a asp-controller="Home" asp-action="Index" class="nav-logo">
+                <span class="logo-icon">🧸</span> ToyLand
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="nav-mobile-toggle" type="button" onclick="toggleMobileNav()" aria-label="فتح القائمة">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="tl-navbar-collapse" id="tlNavbarNav">
+                <ul class="nav-links">
+                    <li>
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-house-door"></i>
+                            <span>الرئيسية</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home" asp-action="WhoUs">
+                            <i class="bi bi-people"></i>
+                            <span>من نحن</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home" asp-action="ShowProducts">
+                            <i class="bi bi-grid"></i>
+                            <span>المنتجات</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Home" asp-action="Compailant">
+                            <i class="bi bi-chat-dots"></i>
+                            <span>الشكاوي</span>
+                        </a>
+                    </li>
+
+                    @if (role.Count() > 0 && role[0] == "Admin")
+                    {
+                        <li class="nav-dropdown-wrap">
+                            <a href="#" class="nav-dropdown-toggle" onclick="toggleAdminMenu(event)">
+                                <i class="bi bi-gear-fill"></i>
+                                <span>الإدارة</span>
+                                <i class="bi bi-chevron-down nav-chevron"></i>
+                            </a>
+                            <ul class="nav-dropdown-menu">
+                                <li>
+                                    <a asp-controller="ProductType" asp-action="Index">
+                                        <i class="bi bi-tags-fill" style="color:var(--sky)"></i>
+                                        <span>أنواع المنتجات</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="SpecialTag" asp-action="Index">
+                                        <i class="bi bi-bookmark-star-fill" style="color:var(--yellow)"></i>
+                                        <span>التصنيفات المميزة</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Order" asp-action="Index">
+                                        <i class="bi bi-receipt" style="color:var(--green)"></i>
+                                        <span>الطلبات</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Product" asp-action="Index">
+                                        <i class="bi bi-box-seam-fill" style="color:var(--blue)"></i>
+                                        <span>المنتجات</span>
+                                    </a>
+                                </li>
+                                <li class="nav-dropdown-divider"></li>
+                                <li>
+                                    <a asp-controller="Brands" asp-action="Index">
+                                        <i class="bi bi-tags-fill" style="color:var(--yellow)"></i>
+                                        <span>الماركات </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+
+                <div class="nav-actions">
+                    <!-- Cart -->
+                    <a asp-controller="Home" asp-action="Cart" class="nav-icon-btn" aria-label="سلة التسوق">
+                        <i class="bi bi-bag"></i>
+                        @if (count > 0)
+                        {
+                            <span class="nav-badge">@count</span>
+                        }
+                    </a>
+
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <!-- User Menu -->
+                        <div class="nav-dropdown-wrap">
+                            <button class="nav-user-btn" onclick="toggleUserMenu(event)">
+                                <div class="user-avatar">@Name.Substring(0, 1).ToUpper()</div>
+                                <span class="tl-d-none-mobile">@Name</span>
+                                <i class="bi bi-chevron-down nav-chevron"></i>
+                            </button>
+                            <ul class="nav-dropdown-menu nav-dropdown-menu--end">
+                                <li>
+                                    <a asp-controller="Account" asp-action="Logout" class="nav-dropdown-danger">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        <span>تسجيل الخروج</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="nav-login-btn">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>دخول</span>
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="nav-shop-btn">
+                            <i class="bi bi-person-plus-fill"></i>
+                            <span>إنشاء حساب</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- الفوتر -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">🧸 تويلاند</div>
+                <p class="footer-desc">نجلب السحر والبهجة للأطفال في كل مكان. كل لعبة مختارة بعناية، معتمدة للسلامة، ومحبوبة من الأطفال حول العالم.</p>
+                <div class="footer-socials">
+                    <button class="social-btn" aria-label="فيسبوك"><i class="bi bi-facebook"></i></button>
+                    <button class="social-btn" aria-label="إنستغرام"><i class="bi bi-instagram"></i></button>
+                    <button class="social-btn" aria-label="تيك توك"><i class="bi bi-tiktok"></i></button>
+                    <button class="social-btn" aria-label="بينتريست"><i class="bi bi-pinterest"></i></button>
+                </div>
+            </div>
+            <div>
+                <div class="footer-col-title">تسوّق</div>
+                <ul class="footer-links">
+                    <li><a href="#">وصل حديثاً</a></li>
+                    <li><a href="#">الأكثر مبيعاً</a></li>
+                    <li><a href="#">ألعاب بتخفيضات</a></li>
+                    <li><a href="#">مجموعات الهدايا</a></li>
+                    <li><a href="#">دليل الأعمار</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer-col-title">المساعدة</div>
+                <ul class="footer-links">
+                    <li><a href="#">تتبع طلبي</a></li>
+                    <li><a href="#">الإرجاع والاسترداد</a></li>
+                    <li><a href="#">معلومات الشحن</a></li>
+                    <li><a href="#">الأسئلة الشائعة</a></li>
+                    <li><a href="#">تواصل معنا</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer-col-title">الشركة</div>
+                <ul class="footer-links">
+                    <li><a href="#">عن تويلاند</a></li>
+                    <li><a href="#">وعد السلامة</a></li>
+                    <li><a href="#">الاستدامة</a></li>
+                    <li><a href="#">الصحافة</a></li>
+                    <li><a href="#">وظائف</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            صُنع بـ <span>❤️</span> لكل طفل يحلم — © 2026 تويلاند. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+
+    <!-- السكريبتات -->
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/jszip/jszip.min.js"></script>
+    <script src="~/lib/pdfmake/pdfmake.min.js"></script>
+    <script src="~/lib/pdfmake/vfs_fonts.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+           // Mobile nav toggle
+        function toggleMobileNav() {
+            const panel = document.getElementById('tlNavbarNav');
+            panel.classList.toggle('tl-open');
+        }
+
+        // Admin dropdown
+        function toggleAdminMenu(e) {
+            e.preventDefault();
+            const wrap = e.currentTarget.closest('.nav-dropdown-wrap');
+            const allDropdowns = document.querySelectorAll('.nav-dropdown-wrap.open');
+            allDropdowns.forEach(d => { if (d !== wrap) d.classList.remove('open'); });
+            wrap.classList.toggle('open');
+        }
+
+        // User dropdown
+        function toggleUserMenu(e) {
+            e.preventDefault();
+            const wrap = e.currentTarget.closest('.nav-dropdown-wrap');
+            const allDropdowns = document.querySelectorAll('.nav-dropdown-wrap.open');
+            allDropdowns.forEach(d => { if (d !== wrap) d.classList.remove('open'); });
+            wrap.classList.toggle('open');
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-dropdown-wrap')) {
+                document.querySelectorAll('.nav-dropdown-wrap.open')
+                    .forEach(d => d.classList.remove('open'));
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

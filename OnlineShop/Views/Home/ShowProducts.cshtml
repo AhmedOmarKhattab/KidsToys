@@ -1,0 +1,854 @@
+﻿@model List<Product>
+@{
+    ViewData["Title"] = "المنتجات";
+    var brands = ViewBag.Brands as List<ProductBrand> ?? new List<ProductBrand>();
+    var types  = ViewBag.Types  as List<ProductType>  ?? new List<ProductType>();
+
+    var currentName  = ViewBag.name        as string ?? "";
+    var currentBrand = ViewBag.brand       as int?;
+    var currentType  = ViewBag.currentType as int?;
+    var currentPage  = (int)(ViewBag.pageNumber ?? 1);
+}
+
+<!-- PAGE HEADER -->
+<div class="sp-header" dir="rtl">
+    <div class="sp-blob sp-blob-a"></div>
+    <div class="sp-blob sp-blob-b"></div>
+    <div class="sp-blob sp-blob-c"></div>
+    <div class="sp-header-inner">
+        <h1 class="sp-header-title">
+            <div class="sp-header-icon">🧸</div>
+            تصفّح ألعابنا
+        </h1>
+        <div class="sp-header-right">
+            <div class="sp-result-count">
+                <i class="bi bi-bag-heart-fill"></i>
+                @Model.Count لعبة
+            </div>
+            <form method="get" asp-action="ShowProducts">
+                <input type="hidden" name="pageNumber" value="1" />
+                @if (currentBrand.HasValue) { <input type="hidden" name="brand" value="@currentBrand" /> }
+                @if (currentType.HasValue)  { <input type="hidden" name="type"  value="@currentType"  /> }
+                <div class="sp-quick-search">
+                    <input type="text" name="name" value="@currentName" placeholder="ابحث عن لعبة..." />
+                    <button type="submit"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="sp-layout" dir="rtl">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sp-sidebar">
+
+        <button id="mobileFilterToggle" onclick="toggleMobileFilters()">
+            <i class="bi bi-funnel-fill"></i> تصفية المنتجات
+        </button>
+
+        <form method="get" asp-action="ShowProducts" id="filterForm">
+            <input type="hidden" name="pageNumber" value="1" />
+            <input type="hidden" name="name" value="@currentName" />
+
+            <div class="sp-filter-card" id="mainFilterCard">
+                <div class="sp-filter-head">
+                    <h3>🎯 تصفية النتائج</h3>
+                    <a href="@Url.Action("ShowProducts", new { pageNumber = 1 })" class="sp-filter-reset">
+                        <i class="bi bi-x-circle"></i> مسح الكل
+                    </a>
+                </div>
+                <div class="sp-filter-body">
+
+                    <div class="sp-filter-label">
+                        <span>🏆</span> الماركة / البراند
+                    </div>
+                    <select name="brand" class="sp-select">
+                        <option value="">— جميع الماركات —</option>
+                        @foreach (var b in brands)
+                        {
+                            <option value="@b.Id">@b.Name</option>
+                        }
+                    </select>
+
+                    <div class="sp-filter-label" style="margin-top:.85rem">
+                        <span>🏷️</span> نوع المنتج
+                    </div>
+                    <select name="type" class="sp-select">
+                        <option value="">— جميع الأنواع —</option>
+                        @foreach (var t in types)
+                        {
+                            <option value="@t.Id">@t.Name</option>
+                        }
+                    </select>
+
+                    <button type="submit" class="sp-apply-btn">
+                        <i class="bi bi-check2-circle"></i> بحث الآن
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        @if (!string.IsNullOrEmpty(currentName) || currentBrand.HasValue || currentType.HasValue)
+        {
+            <div class="sp-active-filters">
+                <div class="sp-active-filters-label">🔍 الفلاتر النشطة</div>
+                @if (!string.IsNullOrEmpty(currentName))
+                {
+                    <span class="sp-active-tag">
+                        <i class="bi bi-search"></i> @currentName
+                        <a href="@Url.Action("ShowProducts", new { brand = currentBrand, type = currentType, pageNumber = 1 })">×</a>
+                    </span>
+                }
+                @if (currentBrand.HasValue)
+                {
+                    var bName = brands.FirstOrDefault(b => b.Id == currentBrand)?.Name;
+                    <span class="sp-active-tag">
+                        <i class="bi bi-award"></i> @bName
+                        <a href="@Url.Action("ShowProducts", new { name = currentName, type = currentType, pageNumber = 1 })">×</a>
+                    </span>
+                }
+                @if (currentType.HasValue)
+                {
+                    var tName = types.FirstOrDefault(t => t.Id == currentType)?.Name;
+                    <span class="sp-active-tag">
+                        <i class="bi bi-tag"></i> @tName
+                        <a href="@Url.Action("ShowProducts", new { name = currentName, brand = currentBrand, pageNumber = 1 })">×</a>
+                    </span>
+                }
+            </div>
+        }
+
+        @if (brands.Any())
+        {
+            <div class="sp-filter-card">
+                <div class="sp-filter-head">
+                    <h3>⭐ الماركات الشائعة</h3>
+                </div>
+                <div class="sp-filter-body">
+                    <div class="sp-chips">
+                        <a href="@Url.Action("ShowProducts", new { name = currentName, type = currentType, pageNumber = 1 })"
+                           class="sp-chip @(!currentBrand.HasValue ? "active" : "")">
+                            الكل
+                        </a>
+                        @foreach (var b in brands)
+                        {
+                            <a href="@Url.Action("ShowProducts", new { brand = b.Id, name = currentName, type = currentType, pageNumber = 1 })"
+                               class="sp-chip @(currentBrand == b.Id ? "active" : "")">
+                                @b.Name
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+    </aside>
+
+    <!-- ── CONTENT ── -->
+    <main class="sp-content">
+
+        <div class="sp-toolbar">
+            <div class="sp-toolbar-left">
+                عرض <strong>@Model.Count</strong> منتج
+                @if (!string.IsNullOrEmpty(currentName))
+                {<span> لـ "<strong>@currentName</strong>"</span>}
+            </div>
+            <div class="sp-view-toggle">
+                <button class="sp-view-btn active" id="gridViewBtn" onclick="setView('grid')" title="عرض شبكي">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                </button>
+                <button class="sp-view-btn" id="listViewBtn" onclick="setView('list')" title="عرض قائمة">
+                    <i class="bi bi-list-ul"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="sp-grid" id="productsGrid">
+            @if (!Model.Any())
+            {
+                <div class="sp-empty">
+                    <div class="sp-empty-icon">🔍</div>
+                    <h3>لا توجد ألعاب بهذه المعايير</h3>
+                    <p>جرّب تغيير الفلاتر أو البحث بكلمة مختلفة</p>
+                    <a href="@Url.Action("ShowProducts", new { pageNumber = 1 })" class="btn-primary" style="display:inline-flex;margin-top:1.25rem">
+                        عرض كل الألعاب 🎉
+                    </a>
+                </div>
+            }
+            else
+            {
+                @foreach (var product in Model)
+                {
+                    <div class="sp-product-card">
+                        <div class="sp-product-img-wrap">
+                            <img src="~/files/images/@product.Image"
+                                 alt="@product.Name"
+                                 class="sp-product-img"
+                                 loading="lazy"
+                                 onerror="this.src='/files/images/noimage.png'" />
+                            <div class="sp-product-badges">
+                                @if (product.Quantity > 0 && product.Quantity <= 10)
+                                {
+                                    <span class="sp-badge badge-hot">🔥 كمية محدودة</span>
+                                }
+                                @if (product.Price < 50)
+                                {
+                                    <span class="sp-badge badge-sale">💜 تخفيض</span>
+                                }
+                            </div>
+                            <button class="sp-wish-btn" onclick="toggleWish(this)" aria-label="أضف للمفضلة">🤍</button>
+                        </div>
+                        <div class="sp-product-body">
+                            @if (product.ProductBrand != null)
+                            {
+                                <div class="sp-product-brand">@product.ProductBrand.Name</div>
+                            }
+                            <div class="sp-product-name">@product.Name</div>
+                            <div class="sp-product-stars">
+                                <span class="sp-stars">★★★★★</span>
+                                <span class="sp-stars-count">(٤.٥)</span>
+                            </div>
+                            <div class="sp-product-footer">
+                                <div class="sp-product-price">
+                                    @product.Price.ToString("0.00") <sup>ج.م</sup>
+                                </div>
+                                <a asp-action="Details" asp-route-id="@product.Id" class="sp-detail-btn">
+                                    <i class="bi bi-eye-fill"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="sp-pagination">
+                @if (currentPage > 1)
+                {
+                    <a href="@Url.Action("ShowProducts", new { name = currentName, brand = currentBrand, type = currentType, pageNumber = currentPage - 1 })"
+                       class="sp-page-btn">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                }
+                @for (int i = Math.Max(1, currentPage - 2); i <= currentPage + 2; i++)
+                {
+                    <a href="@Url.Action("ShowProducts", new { name = currentName, brand = currentBrand, type = currentType, pageNumber = i })"
+                       class="sp-page-btn @(i == currentPage ? "active" : "")">@i</a>
+                }
+                @if (Model.Count == 16)
+                {
+                    <a href="@Url.Action("ShowProducts", new { name = currentName, brand = currentBrand, type = currentType, pageNumber = currentPage + 1 })"
+                       class="sp-page-btn">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                }
+            </div>
+        }
+
+    </main>
+</div>
+
+<style>
+    /*
+     * Inherits from Index.cshtml (via shared layout):
+     * --orange, --pink, --yellow, --blue, --purple, --green, --sky,
+     * --light-bg, --text, --muted, --bounce
+     * Fonts: Cairo, Tajawal, Fredoka One  |  Bootstrap Icons
+     * .btn-primary is also global
+     */
+
+    /* ── PAGE HEADER ── */
+    .sp-header {
+        background: linear-gradient(135deg, #1e1b2e 0%, #2d1f3d 55%, #1a2640 100%);
+        padding: 2.5rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .sp-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .sp-blob-a { width: 320px; height: 320px; background: var(--orange); top: -120px; right: -60px; }
+    .sp-blob-b { width: 220px; height: 220px; background: var(--pink);   bottom: -70px; left: 10%; }
+    .sp-blob-c { width: 160px; height: 160px; background: var(--yellow); top: 20%; left: 40%; opacity: 0.15; }
+
+    .sp-header-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .sp-header-title {
+        color: white;
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: 1.9rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .sp-header-icon {
+        width: 50px; height: 50px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(12px);
+        border: 1.5px solid rgba(255,255,255,0.2);
+        border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .sp-header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+    .sp-result-count {
+        background: rgba(255,255,255,0.12);
+        border: 1.5px solid rgba(255,255,255,0.15);
+        color: rgba(255,255,255,0.9);
+        font-size: 0.84rem;
+        font-weight: 700;
+        padding: 0.45rem 1.1rem;
+        border-radius: 50px;
+        display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .sp-result-count i { color: var(--yellow); }
+
+    .sp-quick-search {
+        display: flex;
+        align-items: center;
+        background: rgba(255,255,255,0.12);
+        border: 1.5px solid rgba(255,255,255,0.18);
+        border-radius: 50px;
+        overflow: hidden;
+        padding: 0.25rem 0.25rem 0.25rem 0.85rem;
+        gap: 0.5rem;
+        backdrop-filter: blur(8px);
+    }
+
+    .sp-quick-search input {
+        background: none; border: none; outline: none;
+        color: white;
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.87rem; font-weight: 600;
+        width: 180px; text-align: right;
+    }
+
+    .sp-quick-search input::placeholder { color: rgba(255,255,255,0.45); }
+
+    .sp-quick-search button {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        border: none; color: white;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 0.9rem;
+        transition: transform 0.2s var(--bounce);
+        flex-shrink: 0;
+    }
+
+    .sp-quick-search button:hover { transform: scale(1.15); }
+
+    /* ── LAYOUT ── */
+    .sp-layout {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 2rem 5rem;
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 1.75rem;
+        align-items: start;
+    }
+
+    /* ── SIDEBAR ── */
+    .sp-sidebar {
+        position: sticky;
+        top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .sp-filter-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(255,107,53,0.08);
+        border: 2px solid rgba(255,107,53,0.1);
+    }
+
+    .sp-filter-head {
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, #1e1b2e, #2d1f3d);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .sp-filter-head h3 {
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: white;
+        margin: 0;
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    .sp-filter-reset {
+        font-size: 0.72rem;
+        color: rgba(255,255,255,0.45);
+        text-decoration: none;
+        font-weight: 700;
+        transition: color 0.2s;
+        display: flex; align-items: center; gap: 0.3rem;
+    }
+
+    .sp-filter-reset:hover { color: var(--yellow); }
+
+    .sp-filter-body { padding: 1.25rem; }
+
+    .sp-filter-label {
+        font-size: 0.74rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 0.6rem;
+        display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .sp-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid rgba(255,107,53,0.15);
+        border-radius: 14px;
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.87rem;
+        color: var(--text);
+        background: var(--light-bg);
+        outline: none;
+        cursor: pointer;
+        appearance: none; -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23FF6B35' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: left 12px center;
+        padding-left: 2.2rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .sp-select:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,107,53,0.12); }
+
+    .sp-apply-btn {
+        width: 100%;
+        padding: 0.85rem;
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        color: white; border: none; border-radius: 14px;
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.92rem; font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.25s var(--bounce), box-shadow 0.2s;
+        box-shadow: 0 6px 20px rgba(255,107,53,0.35);
+        display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .sp-apply-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(255,107,53,0.45); }
+
+    /* Active filters */
+    .sp-active-filters {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem 1.25rem;
+        box-shadow: 0 4px 16px rgba(255,107,53,0.07);
+        border: 2px solid rgba(255,107,53,0.1);
+    }
+
+    .sp-active-filters-label {
+        font-size: 0.74rem;
+        font-weight: 800;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 0.65rem;
+    }
+
+    .sp-active-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.8rem;
+        background: linear-gradient(135deg, #fff0e0, #fde8d8);
+        border: 1.5px solid rgba(255,107,53,0.25);
+        border-radius: 50px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: var(--orange);
+        margin: 0.2rem;
+    }
+
+    .sp-active-tag a {
+        color: var(--orange);
+        text-decoration: none;
+        font-size: 0.9rem;
+        line-height: 1;
+        opacity: 0.6;
+        transition: opacity 0.15s;
+    }
+
+    .sp-active-tag a:hover { opacity: 1; }
+
+    /* Brand chips */
+    .sp-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .sp-chip {
+        padding: 0.38rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 2px solid rgba(255,107,53,0.15);
+        background: var(--light-bg);
+        color: var(--muted);
+        transition: all 0.2s var(--bounce);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .sp-chip:hover, .sp-chip.active {
+        background: linear-gradient(135deg, #fff0e0, #fde8d8);
+        border-color: var(--orange);
+        color: var(--orange);
+        transform: translateY(-2px);
+    }
+
+    /* Mobile toggle */
+    #mobileFilterToggle {
+        display: none;
+        width: 100%;
+        padding: 0.85rem 1.25rem;
+        background: linear-gradient(135deg, #1e1b2e, #2d1f3d);
+        color: white; border: none; border-radius: 16px;
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.9rem; font-weight: 800;
+        align-items: center; justify-content: center; gap: 0.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    /* ── CONTENT ── */
+    .sp-content { min-width: 0; }
+
+    .sp-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        background: white;
+        border-radius: 18px;
+        padding: 0.85rem 1.25rem;
+        border: 2px solid rgba(255,107,53,0.08);
+        box-shadow: 0 2px 10px rgba(255,107,53,0.05);
+    }
+
+    .sp-toolbar-left {
+        font-size: 0.87rem;
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    .sp-toolbar-left strong { color: var(--orange); }
+
+    .sp-view-toggle { display: flex; gap: 0.4rem; }
+
+    .sp-view-btn {
+        width: 38px; height: 38px;
+        border: 2px solid rgba(255,107,53,0.15);
+        background: var(--light-bg);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--muted); cursor: pointer;
+        transition: all 0.2s var(--bounce);
+        font-size: 0.95rem;
+    }
+
+    .sp-view-btn.active, .sp-view-btn:hover {
+        border-color: var(--orange);
+        color: var(--orange);
+        background: linear-gradient(135deg, #fff0e0, #fde8d8);
+        transform: scale(1.1);
+    }
+
+    /* ── PRODUCT GRID ── */
+    .sp-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+
+    .sp-grid.list-view { grid-template-columns: 1fr; }
+
+    .sp-product-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        transition: transform 0.3s var(--bounce), box-shadow 0.3s, border-color 0.3s;
+        display: flex; flex-direction: column;
+        box-shadow: 0 4px 16px rgba(255,107,53,0.07);
+        border: 2px solid transparent;
+        animation: spCardReveal 0.4s ease both;
+    }
+
+    @for (int i = 1; i <= 16; i++) {
+        <text>.sp-product-card:nth-child(@i) { animation-delay: @(i * 0.04)s; }</text>
+    }
+
+    @@keyframes spCardReveal {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .sp-product-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--yellow);
+        box-shadow: 0 18px 44px rgba(255,107,53,0.15);
+    }
+
+    .sp-product-img-wrap {
+        position: relative;
+        padding-top: 80%;
+        background: linear-gradient(135deg, #fff8f0, #fff0e0);
+        overflow: hidden;
+    }
+
+    .sp-product-img {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s var(--bounce);
+    }
+
+    .sp-product-card:hover .sp-product-img { transform: scale(1.07); }
+
+    .sp-product-badges {
+        position: absolute;
+        top: 0.75rem; right: 0.75rem;
+        display: flex; flex-direction: column; gap: 0.4rem;
+        z-index: 2;
+    }
+
+    .sp-badge {
+        padding: 0.28rem 0.7rem;
+        border-radius: 50px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        display: inline-flex; align-items: center; gap: 0.25rem;
+        color: white;
+    }
+
+    .badge-hot  { background: linear-gradient(135deg, var(--orange), var(--pink)); }
+    .badge-sale { background: linear-gradient(135deg, var(--purple), #7c3aed); }
+
+    .sp-wish-btn {
+        position: absolute;
+        top: 0.75rem; left: 0.75rem;
+        background: white; border: none; cursor: pointer;
+        width: 34px; height: 34px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s var(--bounce);
+        z-index: 2;
+    }
+
+    .sp-wish-btn:hover { transform: scale(1.3); }
+
+    .sp-product-body {
+        padding: 1rem 1.1rem 1.1rem;
+        flex-grow: 1; display: flex; flex-direction: column;
+    }
+
+    .sp-product-brand {
+        font-size: 0.7rem; font-weight: 800;
+        color: var(--orange);
+        text-transform: uppercase; letter-spacing: 0.06em;
+        margin-bottom: 0.3rem;
+    }
+
+    .sp-product-name {
+        font-size: 0.95rem; font-weight: 800;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+        overflow: hidden; text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+        line-height: 1.4;
+    }
+
+    .sp-product-stars {
+        display: flex; align-items: center; gap: 0.3rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .sp-stars { color: var(--yellow); }
+    .sp-stars-count { color: var(--muted); font-weight: 600; }
+
+    .sp-product-footer {
+        margin-top: auto;
+        display: flex; align-items: center; justify-content: space-between;
+        padding-top: 0.75rem;
+        border-top: 2px dashed rgba(255,107,53,0.1);
+    }
+
+    .sp-product-price {
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: 1.3rem;
+        color: var(--orange);
+        display: flex; align-items: baseline; gap: 0.2rem;
+    }
+
+    .sp-product-price sup {
+        font-size: 0.72rem;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+    }
+
+    .sp-detail-btn {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        padding: 0.5rem 0.9rem;
+        background: linear-gradient(135deg, #fff0e0, #fde8d8);
+        color: var(--orange);
+        border: 1.5px solid rgba(255,107,53,0.2);
+        border-radius: 12px;
+        font-size: 0.8rem; font-weight: 800;
+        text-decoration: none;
+        transition: all 0.2s var(--bounce);
+        font-family: 'Cairo', sans-serif;
+    }
+
+    .sp-detail-btn:hover {
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        color: white; border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(255,107,53,0.35);
+    }
+
+    /* List view */
+    .list-view .sp-product-card { flex-direction: row; }
+    .list-view .sp-product-img-wrap { padding-top: 0; width: 140px; min-width: 140px; height: 130px; }
+    .list-view .sp-product-body { padding: 1.1rem; }
+    .list-view .sp-product-name { -webkit-line-clamp: 1; }
+
+    /* Empty state */
+    .sp-empty {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 5rem 2rem;
+        background: white;
+        border-radius: 28px;
+        border: 3px dashed rgba(255,107,53,0.2);
+    }
+
+    .sp-empty-icon {
+        font-size: 4.5rem;
+        margin-bottom: 1rem;
+        display: block;
+        animation: floatBig 3s ease-in-out infinite;
+    }
+
+    .sp-empty h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+    .sp-empty p  { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+
+    /* ── PAGINATION ── */
+    .sp-pagination {
+        display: flex; justify-content: center;
+        gap: 0.45rem; margin-top: 2.5rem; flex-wrap: wrap;
+    }
+
+    .sp-page-btn {
+        width: 42px; height: 42px;
+        border-radius: 14px;
+        border: 2px solid rgba(255,107,53,0.15);
+        background: white;
+        color: var(--muted);
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.88rem; font-weight: 800;
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        transition: all 0.25s var(--bounce);
+        cursor: pointer;
+    }
+
+    .sp-page-btn:hover, .sp-page-btn.active {
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        border-color: transparent; color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(255,107,53,0.35);
+    }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 1024px) {
+        .sp-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @@media (max-width: 900px) {
+        .sp-layout { grid-template-columns: 1fr; }
+        .sp-sidebar { position: static; }
+        #mainFilterCard { display: none; }
+        #mobileFilterToggle { display: flex !important; }
+    }
+
+    @@media (max-width: 576px) {
+        .sp-grid { grid-template-columns: 1fr 1fr; }
+        .sp-quick-search input { width: 120px; }
+        .sp-layout { padding: 0 1rem 3rem; }
+    }
+
+    @@media (max-width: 400px) {
+        .sp-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<script>
+    function setView(mode) {
+        var grid = document.getElementById('productsGrid');
+        var gBtn = document.getElementById('gridViewBtn');
+        var lBtn = document.getElementById('listViewBtn');
+        if (mode === 'list') {
+            grid.classList.add('list-view');
+            lBtn.classList.add('active');
+            gBtn.classList.remove('active');
+        } else {
+            grid.classList.remove('list-view');
+            gBtn.classList.add('active');
+            lBtn.classList.remove('active');
+        }
+    }
+
+    function toggleMobileFilters() {
+        var card = document.getElementById('mainFilterCard');
+        card.style.display = card.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleWish(btn) {
+        btn.textContent = btn.textContent.trim() === '🤍' ? '❤️' : '🤍';
+        btn.style.transform = 'scale(1.5)';
+        setTimeout(function () { btn.style.transform = ''; }, 300);
+    }
+</script>

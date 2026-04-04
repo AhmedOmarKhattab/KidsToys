@@ -1,0 +1,1177 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "تفاصيل المنتج";
+}
+
+@using OnlineShop.Helpers
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    var products = HttpContextAccessor.HttpContext?.Session.Get<List<Product>>("products");
+    var productInCart = products?.FirstOrDefault(e => e.Id == Model.Id);
+}
+
+
+<!-- ══ BREADCRUMB ══ -->
+<nav class="pd-crumb" dir="rtl">
+    <a asp-action="Index" asp-controller="Home"><i class="bi bi-house-fill"></i> الرئيسية</a>
+    <i class="bi bi-chevron-left crumb-sep"></i>
+    <a asp-action="Index" asp-controller="Home">المنتجات</a>
+    <i class="bi bi-chevron-left crumb-sep"></i>
+    <span class="crumb-current">@Model.Name</span>
+</nav>
+
+<!-- ══ MAIN PAGE ══ -->
+<div class="pd-page" dir="rtl">
+    <form asp-action="AddToCart" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ProductTypeId" />
+
+        <div class="pd-main">
+
+            <!-- ══ LEFT: VISUAL ══ -->
+            <div class="pd-visual">
+
+                <!-- Status badges -->
+                <div class="pd-status-badges">
+                    @if (Model.IsAvailable && Model.Quantity > 0)
+                    {
+                        <span class="pd-badge badge-in">
+                            <i class="bi bi-check-circle-fill"></i> متوفر
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="pd-badge badge-out">
+                            <i class="bi bi-x-circle-fill"></i> غير متوفر
+                        </span>
+                    }
+                    @if (Model.Quantity > 0 && Model.Quantity <= 10)
+                    {
+                        <span class="pd-badge badge-low">
+                            <i class="bi bi-fire"></i> كمية محدودة
+                        </span>
+                    }
+                </div>
+
+                <!-- Wishlist -->
+                <button type="button" class="pd-wish" title="أضف للمفضلة"
+                        onclick="this.classList.toggle('wished')">
+                    <i class="bi bi-heart-fill"></i>
+                </button>
+
+                <!-- Main image -->
+                <div class="pd-img-wrap">
+                    <div class="pd-img-glow"></div>
+                    <img src="~/files/images/@Model.Image"
+                         alt="@Model.Name"
+                         class="pd-main-img"
+                         onerror="this.src='/files/images/noimage.png'" />
+                </div>
+
+                <!-- Color chip -->
+                @if (!string.IsNullOrEmpty(Model.ProductColor))
+                {
+                    <div class="pd-color-chip">
+                        <div class="color-circle" style="background-color:@Model.ProductColor"></div>
+                        <span class="color-name">@Model.ProductColor</span>
+                    </div>
+                }
+
+                <!-- Thumbnail strip -->
+                <div class="pd-thumbs">
+                    <div class="pd-thumb active">
+                        <img src="~/files/images/@Model.Image" alt=""
+                             onerror="this.src='/files/images/noimage.png'" />
+                    </div>
+                    <div class="pd-thumb">
+                        <img src="~/files/images/@Model.Image" alt=""
+                             onerror="this.src='/files/images/noimage.png'"
+                             style="filter:saturate(0.4)" />
+                    </div>
+                    <div class="pd-thumb">
+                        <img src="~/files/images/@Model.Image" alt=""
+                             onerror="this.src='/files/images/noimage.png'"
+                             style="filter:hue-rotate(50deg)" />
+                    </div>
+                </div>
+
+                <!-- Fun sticker -->
+                <div class="pd-fun-sticker">🌟 اختيار الأطفال!</div>
+            </div>
+
+            <!-- ══ RIGHT: INFO ══ -->
+            <div class="pd-info">
+
+                <!-- Type pill -->
+                <div class="pd-type-pill">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                    @(Model.ProductType?.Name ?? "منتج")
+                </div>
+
+                <!-- Name -->
+                <h1 class="pd-name">@Model.Name</h1>
+
+                <!-- Stars -->
+                <div class="pd-stars">
+                    <i class="bi bi-star-fill star-icon"></i>
+                    <i class="bi bi-star-fill star-icon"></i>
+                    <i class="bi bi-star-fill star-icon"></i>
+                    <i class="bi bi-star-fill star-icon"></i>
+                    <i class="bi bi-star-half star-icon"></i>
+                    <span class="star-score">٤.٥</span>
+                    <div class="sep"></div>
+                    <span>١٢٨ تقييم</span>
+                    <div class="sep"></div>
+                    <span class="satisfaction">٩٦٪ راضون 😊</span>
+                </div>
+
+                <!-- Price block -->
+                <div class="pd-price-block">
+                    <div class="pd-price-main">
+                        <span class="price-currency">ج.م</span>@Model.Price.ToString("0.00")
+                    </div>
+                    <div class="pd-stock-wrap">
+                        @if (Model.Quantity > 10)
+                        {
+                            <div class="pd-stock-tag stock-good">
+                                <i class="bi bi-box-seam-fill"></i> @Model.Quantity قطعة في المخزون
+                            </div>
+                        }
+                        else if (Model.Quantity > 0)
+                        {
+                            <div class="pd-stock-tag stock-low">
+                                <i class="bi bi-exclamation-triangle-fill"></i> @Model.Quantity متبقية فقط!
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="pd-stock-tag stock-none">
+                                <i class="bi bi-x-circle-fill"></i> نفد من المخزون
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Description -->
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="pd-desc">
+                        <i class="bi bi-quote pd-desc-icon"></i>
+                        @Model.Description
+                    </div>
+                }
+
+                <!-- Info rows -->
+                <div class="pd-info-rows">
+                    @if (!string.IsNullOrEmpty(Model.ProductColor))
+                    {
+                        <div class="pd-info-row">
+                            <div class="pd-info-row-icon icon-yellow"><i class="bi bi-palette-fill"></i></div>
+                            <div class="pd-info-row-body">
+                                <div class="pd-info-row-label">اللون</div>
+                                <div class="pd-info-row-val">
+                                    <span class="inline-color-dot" style="background:@Model.ProductColor"></span>
+                                    @Model.ProductColor
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="pd-info-row">
+                        <div class="pd-info-row-icon icon-pink"><i class="bi bi-tag-fill"></i></div>
+                        <div class="pd-info-row-body">
+                            <div class="pd-info-row-label">نوع المنتج</div>
+                            <div class="pd-info-row-val">@(Model.ProductType?.Name ?? "—")</div>
+                        </div>
+                    </div>
+                    <div class="pd-info-row">
+                        <div class="pd-info-row-icon icon-blue"><i class="bi bi-award-fill"></i></div>
+                        <div class="pd-info-row-body">
+                            <div class="pd-info-row-label">العلامة التجارية</div>
+                            <div class="pd-info-row-val">@(Model.ProductBrand?.Name ?? "—")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quantity picker -->
+                <div class="pd-qty-row">
+                    <span class="pd-qty-label">الكمية المطلوبة:</span>
+                    <div class="pd-qty-picker">
+                        <button type="button" class="qty-btn"
+                                onclick="var i=document.getElementById('qty');if(+i.value>1)i.value=+i.value-1">
+                            −
+                        </button>
+                        <input type="number" id="qty" name="quantity"
+                               class="qty-input" value="1" min="1" max="@Model.Quantity" />
+                        <button type="button" class="qty-btn"
+                                onclick="var i=document.getElementById('qty');if(+i.value<@Model.Quantity)i.value=+i.value+1">
+                            +
+                        </button>
+                    </div>
+                    <span class="pd-avail-note">المتاح: <strong>@Model.Quantity</strong></span>
+                </div>
+
+                <!-- Login note -->
+                <div class="pd-login-note">
+                    <i class="bi bi-info-circle-fill"></i>
+                    يجب عليك تسجيل الدخول أولاً قبل الإضافة إلى السلة
+                </div>
+
+                <!-- CTA buttons -->
+                <div class="pd-cta">
+                    @if (productInCart != null)
+                    {
+                        <button type="submit" class="pd-btn pd-btn-remove"
+                                asp-action="Remove" asp-route-id="@Model.Id">
+                            <i class="bi bi-cart-x-fill"></i> إزالة من السلة
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="pd-btn pd-btn-add">
+                            <i class="bi bi-cart-plus-fill"></i> أضف إلى السلة
+                        </button>
+                    }
+                    <a asp-action="Index" class="pd-btn pd-btn-back">
+                        <i class="bi bi-arrow-right"></i> رجوع
+                    </a>
+                </div>
+
+                <!-- Guarantees -->
+                <div class="pd-guarantees">
+                    <div class="pd-guarantee">
+                        <div class="guarantee-icon g-orange">🚚</div>
+                        <p class="guarantee-title">شحن سريع</p>
+                        <span class="guarantee-sub">٢-٥ أيام عمل</span>
+                    </div>
+                    <div class="pd-guarantee">
+                        <div class="guarantee-icon g-pink">🛡️</div>
+                        <p class="guarantee-title">ضمان سنة</p>
+                        <span class="guarantee-sub">على جميع المنتجات</span>
+                    </div>
+                    <div class="pd-guarantee">
+                        <div class="guarantee-icon g-green">↩️</div>
+                        <p class="guarantee-title">إرجاع مجاني</p>
+                        <span class="guarantee-sub">خلال ٣٠ يوماً</span>
+                    </div>
+                    <div class="pd-guarantee">
+                        <div class="guarantee-icon g-blue">🎁</div>
+                        <p class="guarantee-title">تغليف هدايا</p>
+                        <span class="guarantee-sub">مجاناً مع كل طلب</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&display=swap');
+
+   
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: var(--light-bg);
+        font-family: 'Cairo', 'Tajawal', sans-serif;
+        color: var(--text);
+        direction: rtl;
+        overflow-x: hidden;
+    }
+
+    /* ── CONFETTI ── */
+    .confetti-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+        .confetti-bg span {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: floatUp linear infinite;
+        }
+
+            .confetti-bg span:nth-child(1) {
+                left: 5%;
+                background: var(--pink);
+                width: 16px;
+                height: 16px;
+                animation-duration: 13s;
+                animation-delay: 0s;
+            }
+
+            .confetti-bg span:nth-child(2) {
+                left: 15%;
+                background: var(--yellow);
+                width: 10px;
+                height: 10px;
+                animation-duration: 10s;
+                animation-delay: 2s;
+            }
+
+            .confetti-bg span:nth-child(3) {
+                left: 28%;
+                background: var(--blue);
+                width: 13px;
+                height: 13px;
+                animation-duration: 14s;
+                animation-delay: 4s;
+            }
+
+            .confetti-bg span:nth-child(4) {
+                left: 42%;
+                background: var(--orange);
+                width: 8px;
+                height: 8px;
+                animation-duration: 11s;
+                animation-delay: 1s;
+            }
+
+            .confetti-bg span:nth-child(5) {
+                left: 58%;
+                background: var(--purple);
+                width: 15px;
+                height: 15px;
+                animation-duration: 12s;
+                animation-delay: 3s;
+            }
+
+            .confetti-bg span:nth-child(6) {
+                left: 70%;
+                background: var(--green);
+                width: 11px;
+                height: 11px;
+                animation-duration: 9s;
+                animation-delay: 5s;
+            }
+
+            .confetti-bg span:nth-child(7) {
+                left: 80%;
+                background: var(--sky);
+                width: 9px;
+                height: 9px;
+                animation-duration: 8s;
+                animation-delay: 1.5s;
+            }
+
+            .confetti-bg span:nth-child(8) {
+                left: 90%;
+                background: var(--pink);
+                width: 14px;
+                height: 14px;
+                animation-duration: 15s;
+                animation-delay: 6s;
+            }
+
+            .confetti-bg span:nth-child(9) {
+                left: 35%;
+                background: var(--yellow);
+                width: 18px;
+                height: 18px;
+                animation-duration: 11s;
+                animation-delay: 7s;
+            }
+
+            .confetti-bg span:nth-child(10) {
+                left: 75%;
+                background: var(--orange);
+                width: 8px;
+                height: 8px;
+                animation-duration: 13s;
+                animation-delay: 0.5s;
+            }
+
+    @@keyframes floatUp {
+        0% {
+            transform: translateY(110vh) rotate(0deg);
+            opacity: 0.15;
+        }
+
+        100% {
+            transform: translateY(-10vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* ── BREADCRUMB ── */
+    .pd-crumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1.25rem 2.5rem;
+        font-size: 0.87rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+        flex-wrap: wrap;
+    }
+
+        .pd-crumb a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+            .pd-crumb a:hover {
+                color: var(--orange);
+            }
+
+    .crumb-sep {
+        color: #ccc;
+        font-size: 0.75rem;
+    }
+
+    .crumb-current {
+        color: var(--orange);
+        font-weight: 800;
+    }
+
+    /* ── VALIDATION ── */
+    .pd-validation {
+        background: #fef2f2;
+        border: 2px solid #fecaca;
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        margin: 0 2.5rem 1rem;
+        color: var(--danger);
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .pd-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem 5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ── MAIN GRID ── */
+    .pd-main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    /* ══════════════════════════
+           LEFT: VISUAL PANEL
+        ══════════════════════════ */
+    .pd-visual {
+        position: sticky;
+        top: 1.5rem;
+        background: white;
+        border-radius: 28px;
+        padding: 2rem;
+        box-shadow: 0 8px 40px rgba(255,107,53,0.1);
+        border: 2px solid rgba(255,217,61,0.3);
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        animation: slideInLeft 0.6s var(--bounce) both;
+    }
+
+    @@keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Status badges */
+    .pd-status-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .pd-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.78rem;
+        font-weight: 800;
+    }
+
+    .badge-in {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+    }
+
+    .badge-out {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: #991b1b;
+    }
+
+    .badge-low {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+    }
+
+    /* Wishlist button */
+    .pd-wish {
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        width: 42px;
+        height: 42px;
+        background: white;
+        border: 2px solid #fecdd3;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.1rem;
+        color: #fda4af;
+        transition: transform 0.25s var(--bounce), color 0.2s, border-color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 12px rgba(255,77,141,0.15);
+    }
+
+        .pd-wish:hover,
+        .pd-wish.wished {
+            color: var(--pink);
+            border-color: var(--pink);
+            transform: scale(1.25);
+            box-shadow: 0 6px 20px rgba(255,77,141,0.35);
+        }
+
+    /* Image wrap */
+    .pd-img-wrap {
+        position: relative;
+        background: linear-gradient(135deg, #fff8f0, #fff0e6);
+        border-radius: 20px;
+        overflow: hidden;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pd-img-glow {
+        position: absolute;
+        width: 60%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(255,217,61,0.35) 0%, transparent 70%);
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    .pd-main-img {
+        width: 85%;
+        height: 85%;
+        object-fit: contain;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.4s var(--bounce);
+    }
+
+    .pd-img-wrap:hover .pd-main-img {
+        transform: scale(1.08) rotate(2deg);
+    }
+
+    /* Color chip */
+    .pd-color-chip {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: #f9fafb;
+        border: 2px solid #e5e7eb;
+        border-radius: 50px;
+        padding: 0.4rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        width: fit-content;
+    }
+
+    .color-circle {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 0 0 1.5px rgba(0,0,0,0.12);
+        flex-shrink: 0;
+    }
+
+    /* Thumbnails */
+    .pd-thumbs {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .pd-thumb {
+        width: 70px;
+        height: 70px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 2.5px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.2s, transform 0.2s var(--bounce);
+        background: #f3f4f6;
+    }
+
+        .pd-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pd-thumb.active {
+            border-color: var(--orange);
+        }
+
+        .pd-thumb:hover {
+            border-color: var(--yellow);
+            transform: translateY(-3px);
+        }
+
+    /* Fun sticker */
+    .pd-fun-sticker {
+        display: inline-block;
+        align-self: center;
+        background: linear-gradient(135deg, var(--yellow), #f59e0b);
+        color: #92400e;
+        font-weight: 900;
+        font-size: 0.82rem;
+        padding: 0.4rem 1.2rem;
+        border-radius: 50px;
+        box-shadow: 0 4px 14px rgba(255,193,7,0.4);
+        animation: wobble 3s ease-in-out infinite;
+    }
+
+    @@keyframes wobble {
+        0%, 100% {
+            transform: rotate(-2deg);
+        }
+
+        50% {
+            transform: rotate(2deg);
+        }
+    }
+
+    /* ══════════════════════════
+           RIGHT: INFO PANEL
+        ══════════════════════════ */
+    .pd-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1.4rem;
+        animation: slideInRight 0.6s var(--bounce) 0.1s both;
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Type pill */
+    .pd-type-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+        color: var(--purple);
+        border: 1.5px solid rgba(168,85,247,0.2);
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-weight: 800;
+        width: fit-content;
+    }
+
+    /* Product name */
+    .pd-name {
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        line-height: 1.2;
+        color: var(--text);
+    }
+
+    /* Stars */
+    .pd-stars {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    .star-icon {
+        color: var(--yellow);
+        font-size: 1rem;
+    }
+
+    .star-score {
+        color: var(--text);
+        font-weight: 800;
+        margin-right: 0.2rem;
+    }
+
+    .satisfaction {
+        color: var(--success);
+        font-weight: 700;
+    }
+
+    .sep {
+        width: 4px;
+        height: 4px;
+        background: #d1d5db;
+        border-radius: 50%;
+    }
+
+    /* Price block */
+    .pd-price-block {
+        background: linear-gradient(135deg, #fff8f0, #fff3e0);
+        border: 2px solid rgba(255,107,53,0.15);
+        border-radius: 20px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .pd-price-main {
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: 2.8rem;
+        color: var(--orange);
+        line-height: 1;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+
+    .price-currency {
+        font-family: 'Cairo', sans-serif;
+        font-size: 1rem;
+        font-weight: 800;
+        margin-top: 0.4rem;
+        color: var(--orange);
+    }
+
+    .pd-stock-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        align-items: flex-end;
+    }
+
+    .pd-stock-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 800;
+    }
+
+    .stock-good {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .stock-low {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .stock-none {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Description */
+    .pd-desc {
+        background: white;
+        border: 2px solid rgba(108,99,255,0.1);
+        border-right: 4px solid var(--purple);
+        border-radius: 0 16px 16px 0;
+        padding: 1rem 1.25rem;
+        font-size: 0.92rem;
+        color: var(--muted);
+        font-weight: 600;
+        line-height: 1.75;
+        position: relative;
+    }
+
+    .pd-desc-icon {
+        color: var(--purple);
+        margin-left: 0.3rem;
+        font-size: 1.1rem;
+    }
+
+    /* Info rows */
+    .pd-info-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .pd-info-row {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        background: white;
+        border: 2px solid #f3f4f6;
+        border-radius: 16px;
+        padding: 0.85rem 1rem;
+        transition: border-color 0.2s, transform 0.2s var(--bounce);
+    }
+
+        .pd-info-row:hover {
+            border-color: var(--yellow);
+            transform: translateX(-4px);
+        }
+
+    .pd-info-row-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .icon-yellow {
+        background: linear-gradient(135deg, #fde68a, #fbbf24);
+        color: #92400e;
+    }
+
+    .icon-pink {
+        background: linear-gradient(135deg, #fecdd3, #fb7185);
+        color: #9f1239;
+    }
+
+    .icon-blue {
+        background: linear-gradient(135deg, #bfdbfe, #60a5fa);
+        color: #1e40af;
+    }
+
+    .pd-info-row-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+
+    .pd-info-row-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        font-weight: 700;
+    }
+
+    .pd-info-row-val {
+        font-size: 0.92rem;
+        font-weight: 800;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .inline-color-dot {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 0 0 1.5px rgba(0,0,0,0.12);
+        flex-shrink: 0;
+    }
+
+    /* Quantity picker */
+    .pd-qty-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .pd-qty-label {
+        font-weight: 800;
+        font-size: 0.92rem;
+    }
+
+    .pd-qty-picker {
+        display: flex;
+        align-items: center;
+        border: 2.5px solid var(--yellow);
+        border-radius: 50px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 14px rgba(255,217,61,0.2);
+    }
+
+    .qty-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: var(--orange);
+        transition: background 0.2s;
+    }
+
+        .qty-btn:hover {
+            background: #fff3e0;
+        }
+
+    .qty-input {
+        width: 52px;
+        height: 40px;
+        border: none;
+        outline: none;
+        text-align: center;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 1rem;
+        color: var(--text);
+        background: white;
+        -moz-appearance: textfield;
+    }
+
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+    .pd-avail-note {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--muted);
+    }
+
+        .pd-avail-note strong {
+            color: var(--orange);
+        }
+
+    /* Login note */
+    .pd-login-note {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        border: 1.5px solid #bfdbfe;
+        border-radius: 12px;
+        padding: 0.7rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #1e40af;
+    }
+
+    /* CTA buttons */
+    .pd-cta {
+        display: flex;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+    }
+
+    .pd-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.9rem 1.75rem;
+        border-radius: 50px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        transition: transform 0.25s var(--bounce), box-shadow 0.25s;
+        white-space: nowrap;
+    }
+
+    .pd-btn-add {
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        color: white;
+        box-shadow: 0 8px 24px rgba(255,107,53,0.4);
+        flex: 1;
+    }
+
+        .pd-btn-add:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 36px rgba(255,107,53,0.5);
+            color: white;
+        }
+
+    .pd-btn-remove {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        box-shadow: 0 6px 20px rgba(239,68,68,0.35);
+        flex: 1;
+    }
+
+        .pd-btn-remove:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(239,68,68,0.45);
+            color: white;
+        }
+
+    .pd-btn-back {
+        background: white;
+        color: var(--orange);
+        border: 2.5px solid var(--orange);
+    }
+
+        .pd-btn-back:hover {
+            background: var(--orange);
+            color: white;
+            transform: translateY(-4px);
+        }
+
+    /* Guarantees */
+    .pd-guarantees {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+    }
+
+    .pd-guarantee {
+        background: white;
+        border: 2px solid #f3f4f6;
+        border-radius: 18px;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        transition: transform 0.25s var(--bounce), border-color 0.2s;
+        cursor: default;
+    }
+
+        .pd-guarantee:hover {
+            transform: translateY(-5px);
+            border-color: var(--yellow);
+        }
+
+    .guarantee-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin: 0 auto 0.6rem;
+    }
+
+    .g-orange {
+        background: linear-gradient(135deg, #fed7aa, #fb923c);
+    }
+
+    .g-pink {
+        background: linear-gradient(135deg, #fecdd3, #f472b6);
+    }
+
+    .g-green {
+        background: linear-gradient(135deg, #bbf7d0, #4ade80);
+    }
+
+    .g-blue {
+        background: linear-gradient(135deg, #bfdbfe, #60a5fa);
+    }
+
+    .guarantee-title {
+        font-weight: 800;
+        font-size: 0.82rem;
+        color: var(--text);
+        margin-bottom: 0.2rem;
+    }
+
+    .guarantee-sub {
+        font-size: 0.72rem;
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 900px) {
+        .pd-main {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .pd-visual {
+            position: static;
+        }
+
+        .pd-guarantees {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .pd-page {
+            padding: 0 1rem 4rem;
+        }
+
+        .pd-crumb {
+            padding: 1rem 1rem;
+        }
+
+        .pd-name {
+            font-size: 1.75rem;
+        }
+
+        .pd-price-main {
+            font-size: 2.2rem;
+        }
+
+        .pd-guarantees {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .pd-cta {
+            flex-direction: column;
+        }
+
+        .pd-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,982 @@
+﻿@model Order
+@using OnlineShop.Helpers
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewData["Title"] = "إتمام الطلب";
+    var products = HttpContextAccessor.HttpContext?.Session.Get<List<Product>>("products") ?? new List<Product>();
+}
+
+<!-- Header -->
+<div class="co-header" dir="rtl">
+    <div class="co-blob co-blob-a"></div>
+    <div class="co-blob co-blob-b"></div>
+    <div class="co-blob co-blob-c"></div>
+    <div class="co-header-inner">
+        <h1 class="co-header-title">
+            <div class="co-header-icon">📦</div>
+            إتمام الطلب
+        </h1>
+        <div class="co-header-badge">
+            <i class="bi bi-lock-fill"></i> دفع آمن ومشفّر
+        </div>
+    </div>
+</div>
+
+<!-- Steps indicator -->
+<div class="co-steps" dir="rtl">
+    <div class="co-step done">
+        <div class="co-step-circle">🛒</div>
+        <span>السلة</span>
+    </div>
+    <div class="co-step-line done"></div>
+    <div class="co-step active">
+        <div class="co-step-circle">📦</div>
+        <span>تفاصيل الطلب</span>
+    </div>
+    <div class="co-step-line"></div>
+    <div class="co-step">
+        <div class="co-step-circle">✅</div>
+        <span>تأكيد</span>
+    </div>
+</div>
+
+<form asp-action="CheckOut" method="post" enctype="multipart/form-data" dir="rtl">
+    <div asp-validation-summary="ModelOnly" class="co-validation-error"></div>
+
+    <div class="co-layout">
+
+        <!-- ── LEFT: FORM ── -->
+        <div class="co-form-section">
+            <div class="co-card">
+                <div class="co-card-head">
+                    <div class="co-card-head-icon">👤</div>
+                    <div>
+                        <h3>بيانات التوصيل</h3>
+                        <p>أدخل بياناتك لإتمام الطلب</p>
+                    </div>
+                </div>
+                <div class="co-card-body">
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="co-field">
+                        <label asp-for="Name" class="co-label">
+                            <span class="co-label-icon">👤</span>
+                            الاسم الكامل
+                        </label>
+                        <div class="co-input-wrap">
+                            <i class="bi bi-person-fill co-input-icon"></i>
+                            <input asp-for="Name" class="co-input" placeholder="أدخل اسمك الكامل" />
+                        </div>
+                        <span asp-validation-for="Name" class="co-field-error"></span>
+                    </div>
+
+                    <div class="co-field">
+                        <label asp-for="PhoneNo" class="co-label">
+                            <span class="co-label-icon">📱</span>
+                            رقم الهاتف
+                        </label>
+                        <div class="co-input-wrap">
+                            <i class="bi bi-telephone-fill co-input-icon"></i>
+                            <input asp-for="PhoneNo" class="co-input" placeholder="أدخل رقم هاتفك" />
+                        </div>
+                        <span asp-validation-for="PhoneNo" class="co-field-error"></span>
+                    </div>
+
+                    <div class="co-field">
+                        <label asp-for="Email" class="co-label">
+                            <span class="co-label-icon">📧</span>
+                            البريد الإلكتروني
+                        </label>
+                        <div class="co-input-wrap">
+                            <i class="bi bi-envelope-fill co-input-icon"></i>
+                            <input asp-for="Email" type="email" class="co-input" placeholder="example@email.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="co-field-error"></span>
+                    </div>
+
+                    <div class="co-field">
+                        <label asp-for="Address" class="co-label">
+                            <span class="co-label-icon">📍</span>
+                            عنوان التوصيل
+                        </label>
+                        <div class="co-input-wrap co-textarea-wrap">
+                            <i class="bi bi-geo-alt-fill co-input-icon" style="top:1rem"></i>
+                            <textarea asp-for="Address" class="co-input co-textarea" rows="3"
+                                      placeholder="المدينة، الحي، اسم الشارع، رقم المبنى..."></textarea>
+                        </div>
+                        <span asp-validation-for="Address" class="co-field-error"></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Payment method (decorative) -->
+            <div class="co-card co-payment-card">
+                <div class="co-card-head">
+                    <div class="co-card-head-icon">💳</div>
+                    <div>
+                        <h3>طريقة الدفع</h3>
+                        <p>اختر طريقة الدفع المناسبة</p>
+                    </div>
+                </div>
+                <div class="co-card-body">
+                    <div class="co-pay-options">
+                        <label class="co-pay-option co-pay-selected">
+                            <input type="radio" name="payMethod" value="cod" checked hidden />
+                            <div class="co-pay-icon">💵</div>
+                            <div class="co-pay-label">الدفع عند الاستلام</div>
+                            <div class="co-pay-check"><i class="bi bi-check-circle-fill"></i></div>
+                        </label>
+                        <label class="co-pay-option">
+                            <input type="radio" name="payMethod" value="card" hidden />
+                            <div class="co-pay-icon">💳</div>
+                            <div class="co-pay-label">بطاقة ائتمان</div>
+                            <div class="co-pay-check"><i class="bi bi-circle"></i></div>
+                        </label>
+                        <label class="co-pay-option">
+                            <input type="radio" name="payMethod" value="wallet" hidden />
+                            <div class="co-pay-icon">📱</div>
+                            <div class="co-pay-label">محفظة إلكترونية</div>
+                            <div class="co-pay-check"><i class="bi bi-circle"></i></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── RIGHT: ORDER SUMMARY ── -->
+        <div class="co-summary-section">
+            <div class="co-card co-summary-card">
+                <div class="co-card-head co-summary-head">
+                    <div class="co-card-head-icon">🧾</div>
+                    <div>
+                        <h3>ملخص طلبك</h3>
+                        <p>@products.Count منتج في سلتك</p>
+                    </div>
+                </div>
+                <div class="co-card-body co-summary-body">
+
+                    @if (products.Any())
+                    {
+                        <div class="co-order-items">
+                            @foreach (var item in products)
+                            {
+                                <div class="co-order-item">
+                                    <div class="co-order-item-img-wrap">
+                                        <img src="~/files/images/@item.Image"
+                                             alt="@item.Name"
+                                             class="co-order-item-img"
+                                             onerror="this.src='/files/images/noimage.png'" />
+                                    </div>
+                                    <div class="co-order-item-info">
+                                        <div class="co-order-item-name">@item.Name</div>
+                                        @if (item.ProductType != null)
+                                        {
+                                            <div class="co-order-item-type">@item.ProductType.Name</div>
+                                        }
+                                    </div>
+                                    <div class="co-order-item-price">
+                                        @item.Price.ToString("0.00") <sup>ج.م</sup>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="co-summary-rows">
+                            <div class="co-summary-row">
+                                <span>المجموع الفرعي</span>
+                                <span>@products.Sum(e => e.Price).ToString("0.00") ج.م</span>
+                            </div>
+                            <div class="co-summary-row">
+                                <span>🚚 الشحن</span>
+                                <span class="co-free">مجاني</span>
+                            </div>
+                            <div class="co-summary-row">
+                                <span>الضريبة</span>
+                                <span>٠.٠٠ ج.م</span>
+                            </div>
+                        </div>
+
+                        <div class="co-total-box">
+                            <span class="co-total-label">🎉 الإجمالي</span>
+                            <span class="co-total-amount">
+                                @products.Sum(e => e.Price).ToString("0.00") <sup>ج.م</sup>
+                            </span>
+                        </div>
+
+                        <div class="co-shipping-note">
+                            <span>🚚</span> شحن مجاني على هذا الطلب — يصلك خلال ٢-٥ أيام
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="co-empty-cart">
+                            <span>🛒</span>
+                            <p>لا توجد منتجات في السلة</p>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <!-- CTA buttons -->
+            <div class="co-actions">
+                <button type="submit" class="co-submit-btn">
+                    <i class="bi bi-check-circle-fill"></i>
+                    تأكيد الطلب 🎁
+                </button>
+                <a asp-action="Index" asp-controller="Home" class="co-back-btn">
+                    <i class="bi bi-arrow-right"></i>
+                    الرجوع للمنتجات
+                </a>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="co-trust">
+                <div class="co-trust-item">
+                    <div class="co-trust-icon">🔒</div>
+                    <span>دفع آمن</span>
+                </div>
+                <div class="co-trust-item">
+                    <div class="co-trust-icon">🛡️</div>
+                    <span>ضمان الجودة</span>
+                </div>
+                <div class="co-trust-item">
+                    <div class="co-trust-icon">↩️</div>
+                    <span>إرجاع مجاني</span>
+                </div>
+                <div class="co-trust-item">
+                    <div class="co-trust-icon">⚡</div>
+                    <span>توصيل سريع</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    // Payment option selector
+    document.querySelectorAll('.co-pay-option').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+            document.querySelectorAll('.co-pay-option').forEach(function (o) {
+                o.classList.remove('co-pay-selected');
+                o.querySelector('.co-pay-check').innerHTML = '<i class="bi bi-circle"></i>';
+            });
+            this.classList.add('co-pay-selected');
+            this.querySelector('.co-pay-check').innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+        });
+    });
+</script>
+
+<style>
+    /*
+         * Inherits from Index.cshtml (shared layout):
+         * --orange, --pink, --yellow, --blue, --purple, --green,
+         * --light-bg, --text, --muted, --bounce
+         * Fonts: Cairo, Tajawal, Fredoka One  |  Bootstrap Icons
+         */
+
+    /* ── HEADER ── */
+    .co-header {
+        background: linear-gradient(135deg, #1e1b2e 0%, #2d1f3d 55%, #1a2640 100%);
+        padding: 2.5rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 0;
+    }
+
+    .co-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.28;
+        pointer-events: none;
+    }
+
+    .co-blob-a {
+        width: 280px;
+        height: 280px;
+        background: var(--orange);
+        top: -100px;
+        right: -50px;
+    }
+
+    .co-blob-b {
+        width: 200px;
+        height: 200px;
+        background: var(--pink);
+        bottom: -60px;
+        left: 6%;
+    }
+
+    .co-blob-c {
+        width: 140px;
+        height: 140px;
+        background: var(--yellow);
+        top: 15%;
+        left: 40%;
+        opacity: 0.12;
+    }
+
+    .co-header-inner {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .co-header-title {
+        color: white;
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: 1.9rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .co-header-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(10px);
+        border: 1.5px solid rgba(255,255,255,0.2);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .co-header-badge {
+        background: rgba(74,222,128,0.15);
+        border: 1.5px solid rgba(74,222,128,0.3);
+        color: #86efac;
+        font-size: 0.82rem;
+        font-weight: 800;
+        padding: 0.4rem 1.1rem;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    /* ── STEPS ── */
+    .co-steps {
+        background: white;
+        border-bottom: 2px dashed rgba(255,107,53,0.12);
+        padding: 1.25rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        margin-bottom: 2rem;
+    }
+
+    .co-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--muted);
+        min-width: 90px;
+    }
+
+        .co-step.active {
+            color: var(--orange);
+        }
+
+        .co-step.done {
+            color: #16a34a;
+        }
+
+    .co-step-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--light-bg);
+        border: 2.5px solid rgba(255,107,53,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s var(--bounce);
+    }
+
+    .co-step.active .co-step-circle {
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        border-color: transparent;
+        box-shadow: 0 6px 18px rgba(255,107,53,0.35);
+        transform: scale(1.12);
+    }
+
+    .co-step.done .co-step-circle {
+        background: linear-gradient(135deg, #4ade80, #16a34a);
+        border-color: transparent;
+    }
+
+    .co-step-line {
+        flex: 1;
+        height: 3px;
+        background: rgba(255,107,53,0.12);
+        border-radius: 2px;
+        min-width: 60px;
+        margin-bottom: 1.5rem;
+    }
+
+        .co-step-line.done {
+            background: linear-gradient(90deg, #4ade80, #16a34a);
+        }
+
+    /* ── LAYOUT ── */
+    .co-layout {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 2rem 5rem;
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 1.75rem;
+        align-items: start;
+    }
+
+    /* ── CARD ── */
+    .co-card {
+        background: white;
+        border-radius: 28px;
+        border: 2px solid rgba(255,107,53,0.1);
+        box-shadow: 0 6px 28px rgba(255,107,53,0.07);
+        overflow: hidden;
+        margin-bottom: 1.25rem;
+    }
+
+    .co-card-head {
+        background: linear-gradient(135deg, #fff8f0, #fff0e0);
+        padding: 1.25rem 1.5rem;
+        border-bottom: 2px dashed rgba(255,107,53,0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .co-card-head-icon {
+        width: 46px;
+        height: 46px;
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(255,107,53,0.3);
+    }
+
+    .co-card-head h3 {
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: 1.05rem;
+        font-weight: 900;
+        color: var(--text);
+        margin: 0 0 0.15rem;
+    }
+
+    .co-card-head p {
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .co-card-body {
+        padding: 1.5rem;
+    }
+
+    /* ── FORM FIELDS ── */
+    .co-field {
+        margin-bottom: 1.25rem;
+    }
+
+    .co-label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 0.55rem;
+    }
+
+    .co-label-icon {
+        font-size: 0.9rem;
+    }
+
+    .co-input-wrap {
+        position: relative;
+    }
+
+    .co-input-icon {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        color: var(--orange);
+        font-size: 0.95rem;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .co-textarea-wrap .co-input-icon {
+        top: 1rem;
+        transform: none;
+    }
+
+    .co-input {
+        width: 100%;
+        padding: 0.85rem 2.75rem 0.85rem 1rem;
+        border: 2px solid rgba(255,107,53,0.15);
+        border-radius: 14px;
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: var(--text);
+        background: var(--light-bg);
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        text-align: right;
+    }
+
+        .co-input:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.12);
+            background: white;
+        }
+
+        .co-input::placeholder {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+    .co-textarea {
+        resize: vertical;
+        min-height: 90px;
+        padding-top: 0.85rem;
+    }
+
+    .co-field-error {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #ef4444;
+        margin-top: 0.35rem;
+    }
+
+    .co-validation-error {
+        max-width: 1140px;
+        margin: 1rem auto;
+        padding: 0 2rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #ef4444;
+    }
+
+    /* ── PAYMENT OPTIONS ── */
+    .co-payment-card .co-card-head {
+        background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+        border-bottom-color: rgba(168,85,247,0.1);
+    }
+
+    .co-payment-card .co-card-head-icon {
+        background: linear-gradient(135deg, var(--purple), #7c3aed);
+        box-shadow: 0 4px 14px rgba(168,85,247,0.3);
+    }
+
+    .co-pay-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .co-pay-option {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.9rem 1rem;
+        border: 2px solid rgba(255,107,53,0.12);
+        border-radius: 14px;
+        background: var(--light-bg);
+        cursor: pointer;
+        transition: all 0.2s var(--bounce);
+    }
+
+        .co-pay-option:hover {
+            border-color: var(--orange);
+            background: #fff8f0;
+        }
+
+    .co-pay-selected {
+        border-color: var(--orange) !important;
+        background: linear-gradient(135deg, #fff8f0, #fff0e0) !important;
+        box-shadow: 0 4px 14px rgba(255,107,53,0.12);
+    }
+
+    .co-pay-icon {
+        font-size: 1.5rem;
+    }
+
+    .co-pay-label {
+        flex: 1;
+        font-weight: 800;
+        font-size: 0.9rem;
+        color: var(--text);
+    }
+
+    .co-pay-check {
+        font-size: 1.1rem;
+        color: var(--orange);
+    }
+
+    /* ── SUMMARY CARD ── */
+    .co-summary-head {
+        background: linear-gradient(135deg, #1e1b2e, #2d1f3d) !important;
+        border-bottom: none !important;
+    }
+
+        .co-summary-head .co-card-head-icon {
+            background: rgba(255,255,255,0.12) !important;
+            box-shadow: none !important;
+        }
+
+        .co-summary-head h3 {
+            color: white !important;
+        }
+
+        .co-summary-head p {
+            color: rgba(255,255,255,0.45) !important;
+        }
+
+    .co-summary-body {
+        padding: 0 !important;
+    }
+
+    /* Order items list */
+    .co-order-items {
+        padding: 1rem 1.5rem;
+        border-bottom: 2px dashed rgba(255,107,53,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+
+    .co-order-item {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.6rem;
+        border-radius: 14px;
+        transition: background 0.2s;
+    }
+
+        .co-order-item:hover {
+            background: var(--light-bg);
+        }
+
+    .co-order-item-img-wrap {
+        width: 56px;
+        height: 52px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid rgba(255,107,53,0.1);
+        background: linear-gradient(135deg, #fff8f0, #fff0e0);
+    }
+
+    .co-order-item-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .co-order-item-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .co-order-item-name {
+        font-size: 0.88rem;
+        font-weight: 800;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .co-order-item-type {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--orange);
+        margin-top: 0.15rem;
+    }
+
+    .co-order-item-price {
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: 1rem;
+        color: var(--orange);
+        white-space: nowrap;
+        display: flex;
+        align-items: baseline;
+        gap: 0.15rem;
+        flex-shrink: 0;
+    }
+
+        .co-order-item-price sup {
+            font-size: 0.65rem;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
+        }
+
+    /* Summary rows */
+    .co-summary-rows {
+        padding: 1rem 1.5rem;
+        border-bottom: 2px dashed rgba(255,107,53,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+    }
+
+    .co-summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    .co-free {
+        color: #16a34a;
+        font-weight: 800;
+    }
+
+    /* Total */
+    .co-total-box {
+        margin: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, #fff0e0, #fde8d8);
+        border-radius: 18px;
+        border: 2px solid rgba(255,107,53,0.2);
+    }
+
+    .co-total-label {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .co-total-amount {
+        font-family: 'Fredoka One', 'Cairo', cursive;
+        font-size: 1.6rem;
+        color: var(--orange);
+        display: flex;
+        align-items: baseline;
+        gap: 0.2rem;
+    }
+
+        .co-total-amount sup {
+            font-size: 0.75rem;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
+        }
+
+    /* Shipping note */
+    .co-shipping-note {
+        margin: 0 1.5rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.75rem 1rem;
+        background: rgba(74,222,128,0.1);
+        border: 1.5px solid rgba(74,222,128,0.3);
+        border-radius: 14px;
+        font-size: 0.82rem;
+        color: #16a34a;
+        font-weight: 800;
+    }
+
+    /* Empty cart */
+    .co-empty-cart {
+        text-align: center;
+        padding: 2.5rem 1rem;
+    }
+
+        .co-empty-cart span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .co-empty-cart p {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+    /* ── ACTIONS ── */
+    .co-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .co-submit-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--orange), var(--pink));
+        color: white;
+        border: none;
+        border-radius: 16px;
+        font-family: 'Cairo', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.25s var(--bounce), box-shadow 0.25s;
+        box-shadow: 0 8px 24px rgba(255,107,53,0.4);
+    }
+
+        .co-submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 36px rgba(255,107,53,0.5);
+        }
+
+    .co-back-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.85rem;
+        background: white;
+        color: var(--muted);
+        border: 2px solid rgba(255,107,53,0.15);
+        border-radius: 16px;
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 800;
+        text-decoration: none;
+        transition: all 0.2s var(--bounce);
+    }
+
+        .co-back-btn:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+            background: linear-gradient(135deg, #fff0e0, #fde8d8);
+            transform: translateY(-2px);
+        }
+
+    /* ── TRUST BADGES ── */
+    .co-trust {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        background: white;
+        border-radius: 20px;
+        padding: 1rem;
+        border: 2px solid rgba(255,107,53,0.08);
+        box-shadow: 0 4px 16px rgba(255,107,53,0.05);
+    }
+
+    .co-trust-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-align: center;
+    }
+
+    .co-trust-icon {
+        font-size: 1.4rem;
+        line-height: 1;
+        transition: transform 0.2s var(--bounce);
+    }
+
+    .co-trust-item:hover .co-trust-icon {
+        transform: scale(1.3);
+    }
+
+    /* ── RESPONSIVE ── */
+    @@media (max-width: 960px) {
+        .co-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .co-layout {
+            padding: 0 1rem 3rem;
+        }
+
+        .co-steps {
+            padding: 1rem;
+            gap: 0;
+        }
+
+        .co-step {
+            min-width: 70px;
+            font-size: 0.7rem;
+        }
+
+        .co-step-line {
+            min-width: 30px;
+        }
+
+        .co-header-inner {
+            padding: 0 1rem;
+        }
+
+        .co-card-body {
+            padding: 1.1rem;
+        }
+
+        .co-order-items {
+            padding: 0.85rem 1rem;
+        }
+
+        .co-summary-rows {
+            padding: 0.85rem 1rem;
+        }
+
+        .co-total-box {
+            margin: 0.75rem 1rem;
+        }
+
+        .co-shipping-note {
+            margin: 0 1rem 1rem;
+        }
+    }
+</style>

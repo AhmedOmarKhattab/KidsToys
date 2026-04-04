@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "المنتجات";
+
+}
+<br />
+<br />
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">قائمة المنتجات</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a asp-action="Create" class="btn btn-info">
+            <i class="fa fa-plus"></i> إضافة منتج جديد
+        </a>
+    </div>
+</div>
+
+<form method="post">
+    <div class="row">
+        <div class="col-3">
+            <input type="number" class="form-control" name="lowAmount" placeholder="أقل سعر" />
+        </div>
+        <div class="col-3">
+            <input type="number" class="form-control" name="highAmount" placeholder="أعلى سعر" />
+        </div>
+        <div class="col-3">
+            <input type="submit" value="بحث" class="btn btn-success" />
+        </div>
+        <div class="col-3"></div>
+    </div>
+</form>
+
+<br />
+
+<div>
+    <table class="table table-striped border" id="myTable">
+        <thead>
+            <tr class="table-info">
+                <th>
+                    الاسم
+                </th>
+                <th>
+                    السعر
+                </th>
+                <th>
+                    الكمية
+                </th>
+                <th>
+                    اللون
+                </th>
+                <th>
+                    متوفر
+                </th>
+                <th>
+                    نوع المنتج
+                </th>
+                <th>
+                    التصنيف الخاص
+                </th>
+                <th> الماركة</th>
+                <th> </th>
+                <th> </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.ProductColor</td>
+                    <td>@item.IsAvailable</td>
+                    <td>@item.ProductType.Name</td>
+                    <td>@item.SpecialTag.Name</td>
+                    <td>@item.ProductBrand.Name</td>
+
+                    <td>
+                        <partial name="PartialView/CreateEditPartialView" model="@item.Id" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts {
+  
+}
