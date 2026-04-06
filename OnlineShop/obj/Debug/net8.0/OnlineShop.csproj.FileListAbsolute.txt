@@ -1164,3 +1164,4 @@ D:\projects\C# projects\Core Projects\KidsToys\OnlineShop\obj\Debug\net8.0\refin
 D:\projects\C# projects\Core Projects\KidsToys\OnlineShop\obj\Debug\net8.0\OnlineShop.pdb
 D:\projects\C# projects\Core Projects\KidsToys\OnlineShop\obj\Debug\net8.0\OnlineShop.genruntimeconfig.cache
 D:\projects\C# projects\Core Projects\KidsToys\OnlineShop\obj\Debug\net8.0\ref\OnlineShop.dll
+D:\projects\C# projects\Core Projects\KidsToys\OnlineShop\obj\Debug\net8.0\OnlineShop.sourcelink.json
