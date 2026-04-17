@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<Order>
 @{
     ViewData["Title"] = "الطلبات";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
 }
 
 <h1>الطلبات</h1>
@@ -16,6 +18,8 @@
             <th>تاريخ الطلب</th>
             <th>الحالة</th>
             <th></th>
+            <th></th>
+
         </tr>
     </thead>
     <tbody>
@@ -32,10 +36,16 @@
                     <td>@o.OrderDate</td>
                     <td>@o.Status</td>
                     <td>
+                        <a asp-action="ChangeStauts" asp-controller="Order" class="btn btn-warning" asp-route-id="@o.Id">
+                            <i class="fas fa-sync-alt"></i>
+                        </a>
+                    </td>
+                    <td>
                         <a asp-action="GetDetails" asp-controller="Order" class="btn btn-success" asp-route-id="@o.Id">
                             <i class="fas fa-list"></i>
                         </a>
                     </td>
+
                 </tr>
             }
         }

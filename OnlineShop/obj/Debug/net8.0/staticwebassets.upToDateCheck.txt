@@ -1,7 +1,6 @@
 wwwroot\css\site.css
 wwwroot\css\_AuthSheet.css
 wwwroot\favicon.ico
-wwwroot\files\images\8687b58c-e813-4915-830f-e19c170f6fd7images.png
 wwwroot\files\images\image1.jpg
 wwwroot\files\images\image2.jpg
 wwwroot\files\images\image3.jpg
@@ -2229,3 +2228,4 @@ wwwroot\lib\pdfmake\pdfmake.min.js
 wwwroot\lib\pdfmake\pdfmake.min.js.map
 wwwroot\lib\pdfmake\vfs_fonts.js
 wwwroot\lib\pdfmake\vfs_fonts.min.js
+wwwroot\files\images\8687b58c-e813-4915-830f-e19c170f6fd7images.png

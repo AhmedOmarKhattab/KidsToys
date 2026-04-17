@@ -57,34 +57,7 @@
 
             <div class="tl-navbar-collapse" id="tlNavbarNav">
                 <ul class="nav-links">
-                    <li>
-                        <a asp-controller="Home" asp-action="Index">
-                            <i class="bi bi-house-door"></i>
-                            <span>الرئيسية</span>
-                        </a>
-                    </li>
-                    @if (role.Count == 0 )
-                    {
-                        <li>
-                            <a asp-controller="Home" asp-action="WhoUs">
-                                <i class="bi bi-people"></i>
-                                <span>من نحن</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a asp-controller="Home" asp-action="ShowProducts">
-                                <i class="bi bi-grid"></i>
-                                <span>المنتجات</span>
-                            </a>
-                        </li>
-                    }
-                    <li>
-                        <a asp-controller="Home" asp-action="Compailant">
-                            <i class="bi bi-chat-dots"></i>
-                            <span>الشكاوي</span>
-                        </a>
-                    </li>
-
+                    
                     @if (role.Count() > 0 && role[0] == "Admin")
                     {
                         <li class="nav-dropdown-wrap">
@@ -133,15 +106,7 @@
                 </ul>
 
                 <div class="nav-actions">
-                    <!-- Cart -->
-                    <a asp-controller="Home" asp-action="Cart" class="nav-icon-btn" aria-label="سلة التسوق">
-                        <i class="bi bi-bag"></i>
-                        @if (count > 0)
-                        {
-                            <span class="nav-badge">@count</span>
-                        }
-                    </a>
-
+                   
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <!-- User Menu -->

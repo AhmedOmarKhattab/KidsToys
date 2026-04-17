@@ -17,6 +17,7 @@ namespace OnlineShop.Data
         public DbSet<OrderItem> orderDetails { get; set; }
         public DbSet<ProductBrand> productBrands { get; set; }
         public DbSet<ApplicationUser> applicationUsers { get; set; }
+        public DbSet<Complaint> complaints { get; set; }
 
          
 
