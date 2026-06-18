@@ -1,0 +1,173 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\specialtag\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\specialtag\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\specialtag\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\specialtag\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\specialtag\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\specialtag\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\specialtag\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\specialtag\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\specialtag\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\specialtag\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\producttype\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\producttype\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\views\\product\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\views\\product\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|d:\\projects\\c# projects\\core projects\\kidstoys\\kidstoys\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{96C265EB-7AC2-02D6-BCCE-E6E6319B7575}|KidsToys\\KidsToys.csproj|solutionrelative:kidstoys\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Index.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\SpecialTag\\Index.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Index.cshtml",
+              "RelativeToolTip": "KidsToys\\Views\\SpecialTag\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:06:40.35Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Edit.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\SpecialTag\\Edit.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Edit.cshtml",
+              "RelativeToolTip": "KidsToys\\Views\\SpecialTag\\Edit.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:06:36.929Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Details.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\SpecialTag\\Details.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Details.cshtml",
+              "RelativeToolTip": "KidsToys\\Views\\SpecialTag\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:06:33.532Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Delete.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\SpecialTag\\Delete.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Delete.cshtml",
+              "RelativeToolTip": "KidsToys\\Views\\SpecialTag\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:06:30.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Create.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\SpecialTag\\Create.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\SpecialTag\\Create.cshtml",
+              "RelativeToolTip": "KidsToys\\Views\\SpecialTag\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:06:25.229Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\ProductType\\Details.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\ProductType\\Details.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\ProductType\\Details.cshtml",
+              "RelativeToolTip": "KidsToys\\Views\\ProductType\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:06:15.396Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\Product\\Details.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\Product\\Details.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\Product\\Details.cshtml",
+              "RelativeToolTip": "KidsToys\\Views\\Product\\Details.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:06:03.896Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "_AdminLayout.cshtml",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeDocumentMoniker": "KidsToys\\Views\\Shared\\_AdminLayout.cshtml",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Views\\Shared\\_AdminLayout.cshtml*",
+              "RelativeToolTip": "KidsToys\\Views\\Shared\\_AdminLayout.cshtml*",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAIwGAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-06-18T18:02:08.629Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "KidsToys\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\projects\\C# projects\\Core Projects\\KidsToys\\KidsToys\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "KidsToys\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-18T18:00:31.713Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

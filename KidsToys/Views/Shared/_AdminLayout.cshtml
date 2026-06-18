@@ -1,0 +1,168 @@
+﻿@using System.Net.Http
+@using KidsToys.Helpers
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor;
+@inject UserManager<ApplicationUser> userManager;
+
+@{
+    int count = 0;
+    List<Product> products = HttpContextAccessor.HttpContext.Session
+        .Get<List<Product>>("products");
+
+    if (products == null)
+    {
+        products = new List<Product>();
+    }
+    count = products.Count();
+
+    var Name = User.Identity?.Name ?? "زائر";
+
+    var user = await userManager.FindByNameAsync(Name);
+
+    var role = await userManager.GetRolesAsync(user ?? new ApplicationUser());
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - متجرنا</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/lib/datatables/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables-buttons/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="~/lib/alertifyjs/css/alertify.min.css" />
+    <link rel="stylesheet" href="~/lib/alertifyjs/css/themes/default.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- شريط التنقل -->
+    <header>
+        <nav class="tl-navbar">
+
+            <!-- Mobile Toggle -->
+            <button class="nav-mobile-toggle" type="button" onclick="toggleMobileNav()" aria-label="فتح القائمة">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="tl-navbar-collapse" id="tlNavbarNav">
+                <ul class="nav-links">
+                    <li>
+                        <a asp-controller="ProductType" asp-action="Index">
+                            <i class="bi bi-tags-fill" style="color:var(--sky)"></i>
+                            <span>أنواع المنتجات</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Order" asp-action="Index">
+                            <i class="bi bi-receipt" style="color:var(--green)"></i>
+                            <span>الطلبات</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Product" asp-action="Index">
+                            <i class="bi bi-box-seam-fill" style="color:var(--blue)"></i>
+                            <span>المنتجات</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Complaint" asp-action="Index">
+                            <i class="bi bi-box-seam-fill" style="color:var(--blue)"></i>
+                            <span>الشكاوي</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-dropdown-divider"></li>
+                    <li>
+                        <a asp-controller="Brands" asp-action="Index">
+                            <i class="bi bi-tags-fill" style="color:var(--yellow)"></i>
+                            <span>الماركات </span>
+                        </a>
+                    </li>
+
+                  
+
+                </ul>
+
+                <div class="nav-actions">
+
+                   <a asp-controller="Home" asp-action="Index" class="nav-logo">
+                        <span class="logo-icon">🧸</span> ToyLand
+                    </a>
+
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main role="main">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success text-center">
+                @TempData["Success"]
+            </div>
+        }
+        @RenderBody()
+    </main>
+
+    <!-- السكريبتات -->
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/lib/jszip/jszip.min.js"></script>
+    <script src="~/lib/pdfmake/pdfmake.min.js"></script>
+    <script src="~/lib/pdfmake/vfs_fonts.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+           // Mobile nav toggle
+        function toggleMobileNav() {
+            const panel = document.getElementById('tlNavbarNav');
+            panel.classList.toggle('tl-open');
+        }
+
+        // Admin dropdown
+        function toggleAdminMenu(e) {
+            e.preventDefault();
+            const wrap = e.currentTarget.closest('.nav-dropdown-wrap');
+            const allDropdowns = document.querySelectorAll('.nav-dropdown-wrap.open');
+            allDropdowns.forEach(d => { if (d !== wrap) d.classList.remove('open'); });
+            wrap.classList.toggle('open');
+        }
+
+        // User dropdown
+        function toggleUserMenu(e) {
+            e.preventDefault();
+            const wrap = e.currentTarget.closest('.nav-dropdown-wrap');
+            const allDropdowns = document.querySelectorAll('.nav-dropdown-wrap.open');
+            allDropdowns.forEach(d => { if (d !== wrap) d.classList.remove('open'); });
+            wrap.classList.toggle('open');
+        }
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-dropdown-wrap')) {
+                document.querySelectorAll('.nav-dropdown-wrap.open')
+                    .forEach(d => d.classList.remove('open'));
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
